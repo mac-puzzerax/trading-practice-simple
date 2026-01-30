@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup Practice</title>
+    <title>TradeReps - Setup Practice</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,37 +11,54 @@
             background: #1a1a2e;
             color: #fff;
             min-height: 100vh;
-            padding: 15px;
-            touch-action: pan-y;
         }
-        .header {
+        
+        /* Navigation */
+        .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            padding: 15px 20px;
+            background: #0d1117;
             border-bottom: 1px solid #333;
-            flex-wrap: wrap;
-            gap: 15px;
         }
-        h1 { color: #00d4ff; font-size: 1.5em; }
-        .stats { display: flex; gap: 20px; }
+        .nav h1 { color: #00d4ff; font-size: 1.4em; }
+        .nav-links { display: flex; gap: 10px; }
+        .nav-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .nav-btn:hover, .nav-btn.active { border-color: #00d4ff; color: #00d4ff; }
+        
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            padding: 15px 20px;
+            background: #16213e;
+            border-bottom: 1px solid #333;
+        }
         .stat { text-align: center; }
-        .stat-value { font-size: 1.8em; font-weight: bold; }
+        .stat-value { font-size: 1.5em; font-weight: bold; }
         .stat-value.green { color: #00ff88; }
         .stat-value.red { color: #ff6b6b; }
         .stat-value.yellow { color: #f7b731; }
-        .stat-label { color: #888; font-size: 0.8em; }
+        .stat-label { color: #888; font-size: 0.75em; }
         
-        /* Setup Selector */
+        /* Pages */
+        .page { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .page.active { display: block; }
+        
+        /* PRACTICE PAGE */
         .setup-selector {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
             margin-bottom: 20px;
-            padding: 15px;
-            background: #0d1117;
-            border-radius: 12px;
         }
         .setup-btn {
             padding: 10px 16px;
@@ -50,22 +67,17 @@
             background: transparent;
             color: #888;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.85em;
             transition: all 0.2s;
         }
         .setup-btn:hover { border-color: #00d4ff; color: #00d4ff; }
-        .setup-btn.active { 
-            border-color: #00d4ff; 
-            background: #00d4ff20; 
-            color: #00d4ff;
-            font-weight: bold;
-        }
+        .setup-btn.active { border-color: #00d4ff; background: #00d4ff20; color: #00d4ff; }
         
-        .main { display: grid; grid-template-columns: 1fr 320px; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .practice-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
         
         .chart-area {
             background: #0d1117;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 20px;
             border: 1px solid #333;
         }
@@ -74,396 +86,368 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
         .ticker-info { display: flex; align-items: center; gap: 12px; }
-        .ticker { font-size: 1.4em; font-weight: bold; color: #00d4ff; }
-        .change { background: #00ff8830; color: #00ff88; padding: 5px 12px; border-radius: 15px; font-weight: bold; font-size: 0.9em; }
-        .price { color: #fff; font-size: 1.2em; font-weight: bold; }
+        .ticker { font-size: 1.3em; font-weight: bold; color: #00d4ff; }
+        .price { color: #fff; font-size: 1.1em; }
+        .change { background: #00ff8830; color: #00ff88; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; }
         
-        .chart-container {
-            position: relative;
-            background: #0a0a12;
-            border-radius: 10px;
-            padding: 10px;
-        }
-        
-        /* Price Axis */
+        .chart-container { background: #0a0a12; border-radius: 8px; padding: 10px; position: relative; }
         .price-axis {
-            position: absolute;
-            right: 0;
-            top: 10px;
-            bottom: 60px;
-            width: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 0.75em;
-            color: #666;
-            text-align: right;
-            padding-right: 5px;
+            position: absolute; right: 0; top: 10px; bottom: 50px;
+            width: 45px; display: flex; flex-direction: column;
+            justify-content: space-between; font-size: 0.7em; color: #666; text-align: right; padding-right: 5px;
         }
-        
         .candle-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 6px;
-            height: 250px;
-            padding: 10px 60px 10px 10px;
-            position: relative;
+            display: flex; align-items: flex-end; justify-content: center;
+            gap: 5px; height: 220px; padding: 10px 50px 10px 10px; position: relative;
         }
-        
-        /* Grid lines */
-        .grid-line {
-            position: absolute;
-            left: 10px;
-            right: 60px;
-            height: 1px;
-            background: #ffffff10;
-        }
-        
-        .candle {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            width: 18px;
-        }
-        .candle-body {
-            width: 12px;
-            border-radius: 2px;
-            min-height: 8px;
-        }
-        .candle-wick {
-            width: 2px;
-            position: absolute;
-        }
+        .grid-line { position: absolute; left: 10px; right: 50px; height: 1px; background: #ffffff08; }
+        .candle { display: flex; flex-direction: column; align-items: center; position: relative; width: 16px; }
+        .candle-body { width: 11px; border-radius: 2px; min-height: 6px; }
+        .candle-wick { width: 2px; position: absolute; }
         .candle.green .candle-body { background: #00ff88; }
         .candle.green .candle-wick { background: #00ff88; }
         .candle.red .candle-body { background: #ff6b6b; }
         .candle.red .candle-wick { background: #ff6b6b; }
-        
-        .support-line {
-            position: absolute;
-            left: 10px;
-            right: 60px;
-            height: 2px;
-            background: #f7b731;
-            z-index: 5;
-        }
-        .support-label {
-            position: absolute;
-            right: 65px;
-            color: #f7b731;
-            font-size: 0.75em;
-            transform: translateY(-50%);
-            background: #0a0a12;
-            padding: 2px 5px;
-        }
-        
-        /* Volume */
-        .volume-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 6px;
-            height: 50px;
-            padding: 5px 60px 5px 10px;
-            border-top: 1px solid #333;
-            margin-top: 5px;
-        }
-        .volume-bar {
-            width: 12px;
-            border-radius: 2px 2px 0 0;
-            min-height: 3px;
-        }
+        .support-line { position: absolute; left: 10px; right: 50px; height: 2px; background: #f7b731; z-index: 5; }
+        .support-label { position: absolute; right: 55px; color: #f7b731; font-size: 0.7em; transform: translateY(-50%); background: #0a0a12; padding: 1px 4px; }
+        .volume-chart { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 40px; padding: 5px 50px 5px 10px; border-top: 1px solid #333; }
+        .volume-bar { width: 11px; border-radius: 2px 2px 0 0; min-height: 2px; }
         .volume-bar.green { background: #00ff8860; }
         .volume-bar.red { background: #ff6b6b60; }
-        .volume-bar.high { opacity: 1; }
+        .volume-label { position: absolute; bottom: 5px; left: 10px; font-size: 0.65em; color: #555; }
         
-        .volume-label {
-            position: absolute;
-            bottom: 5px;
-            left: 10px;
-            font-size: 0.7em;
-            color: #666;
-        }
-        
-        .indicators {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        .indicator {
-            padding: 6px 12px;
-            background: #1a1a2e;
-            border-radius: 6px;
-            font-size: 0.85em;
-        }
-        .indicator.pass { color: #00ff88; border: 1px solid #00ff8850; }
-        .indicator.fail { color: #ff6b6b; border: 1px solid #ff6b6b50; }
+        .indicators { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .indicator { padding: 5px 10px; background: #1a1a2e; border-radius: 5px; font-size: 0.8em; }
+        .indicator.pass { color: #00ff88; border: 1px solid #00ff8840; }
+        .indicator.fail { color: #ff6b6b; border: 1px solid #ff6b6b40; }
         
         .sidebar { display: flex; flex-direction: column; gap: 15px; }
-        .card {
-            background: #16213e;
-            border-radius: 12px;
-            padding: 18px;
-            border: 1px solid #333;
-        }
-        .card h3 { color: #00d4ff; margin-bottom: 12px; font-size: 1.1em; }
-        .setup-type {
-            display: inline-block;
-            background: #00d4ff30;
-            color: #00d4ff;
-            padding: 2px 8px;
-            border-radius: 8px;
-            font-size: 0.7em;
-            margin-left: 8px;
-        }
-        .rules { list-style: none; font-size: 0.9em; }
-        .rules li {
-            padding: 6px 0;
-            padding-left: 15px;
-            position: relative;
-            color: #aaa;
-            border-bottom: 1px solid #ffffff08;
-        }
-        .rules li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #00d4ff;
-        }
+        .card { background: #16213e; border-radius: 10px; padding: 15px; border: 1px solid #333; }
+        .card h3 { color: #00d4ff; margin-bottom: 10px; font-size: 1em; }
+        .setup-type { background: #00d4ff30; color: #00d4ff; padding: 2px 8px; border-radius: 8px; font-size: 0.65em; margin-left: 6px; }
+        .rules { list-style: none; font-size: 0.85em; }
+        .rules li { padding: 5px 0 5px 12px; position: relative; color: #aaa; border-bottom: 1px solid #ffffff08; }
+        .rules li:before { content: "•"; position: absolute; left: 0; color: #00d4ff; }
         
-        .question {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .buttons { display: flex; flex-direction: column; gap: 10px; }
-        .btn {
-            padding: 16px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
+        .question { font-size: 1em; margin-bottom: 12px; text-align: center; }
+        .buttons { display: flex; flex-direction: column; gap: 8px; }
+        .btn { padding: 14px; border: none; border-radius: 8px; font-size: 0.95em; font-weight: bold; cursor: pointer; transition: all 0.15s; }
         .btn:hover { transform: translateY(-2px); }
-        .btn:active { transform: translateY(0); }
         .btn-valid { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
-        .btn-valid:hover { box-shadow: 0 5px 20px #00ff8850; }
         .btn-skip { background: #ff6b6b; color: #fff; }
-        .btn-skip:hover { box-shadow: 0 5px 20px #ff6b6b50; }
-        .btn-next { background: #00d4ff; color: #000; display: none; margin-top: 10px; }
-        .btn-next:hover { box-shadow: 0 5px 20px #00d4ff50; }
+        .btn-next { background: #00d4ff; color: #000; display: none; margin-top: 8px; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
         
-        .feedback {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            display: none;
-            font-size: 0.95em;
-        }
+        .feedback { margin-top: 12px; padding: 10px; border-radius: 8px; display: none; font-size: 0.9em; }
         .feedback.correct { background: #00ff8820; border: 1px solid #00ff88; color: #00ff88; }
         .feedback.wrong { background: #ff6b6b20; border: 1px solid #ff6b6b; color: #ff6b6b; }
-        .feedback h4 { margin-bottom: 5px; }
+        .feedback h4 { margin-bottom: 4px; }
         
-        /* Swipe hint */
-        .swipe-hint {
-            text-align: center;
-            color: #666;
-            font-size: 0.8em;
-            margin-top: 10px;
-            display: none;
+        /* LIBRARY PAGE */
+        .library-header { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-box {
+            flex: 1; min-width: 200px; padding: 12px 15px;
+            background: #0d1117; border: 1px solid #333; border-radius: 8px;
+            color: #fff; font-size: 1em;
         }
+        .search-box:focus { outline: none; border-color: #00d4ff; }
+        .filter-btn {
+            padding: 10px 20px; background: #16213e; border: 1px solid #333;
+            border-radius: 8px; color: #888; cursor: pointer;
+        }
+        .filter-btn:hover, .filter-btn.active { border-color: #00d4ff; color: #00d4ff; }
         
-        @media (max-width: 900px) {
-            .main { grid-template-columns: 1fr; }
-            .swipe-hint { display: block; }
-            .candle-chart { height: 200px; }
-            .candle { width: 14px; }
-            .candle-body { width: 10px; }
-            .volume-bar { width: 10px; }
+        .setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .setup-card {
+            background: #16213e; border-radius: 10px; padding: 15px;
+            border: 1px solid #333; cursor: pointer; transition: all 0.2s;
+        }
+        .setup-card:hover { border-color: #00d4ff; transform: translateY(-2px); }
+        .setup-card h4 { color: #00d4ff; margin-bottom: 8px; }
+        .setup-card p { color: #888; font-size: 0.85em; margin-bottom: 10px; }
+        .setup-card .tags { display: flex; gap: 5px; flex-wrap: wrap; }
+        .tag { padding: 3px 8px; background: #0d1117; border-radius: 5px; font-size: 0.75em; color: #666; }
+        .tag.valid { color: #00ff88; }
+        .tag.invalid { color: #ff6b6b; }
+        
+        /* CREATE PAGE */
+        .create-form { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9em; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 12px; background: #0d1117;
+            border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 1em;
+        }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #00d4ff; }
+        .ai-btn {
+            padding: 12px 20px; background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 1em;
+        }
+        .ai-btn:hover { opacity: 0.9; }
+        
+        @media (max-width: 800px) {
+            .practice-grid { grid-template-columns: 1fr; }
+            .setup-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🎯 Setup Practice</h1>
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value green" id="correct">0</div>
-                <div class="stat-label">Correct</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value red" id="wrong">0</div>
-                <div class="stat-label">Wrong</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value yellow" id="streak">0</div>
-                <div class="stat-label">Streak 🔥</div>
-            </div>
+    <nav class="nav">
+        <h1>🎯 TradeReps</h1>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="showPage('practice')">Practice</button>
+            <button class="nav-btn" onclick="showPage('library')">Library</button>
+            <button class="nav-btn" onclick="showPage('create')">+ Create</button>
         </div>
-    </div>
+    </nav>
     
-    <!-- Setup Selector -->
-    <div class="setup-selector">
-        <button class="setup-btn active" data-setup="all">All Setups</button>
-        <button class="setup-btn" data-setup="parabolic">Parabolic</button>
-        <button class="setup-btn" data-setup="vwap">VWAP</button>
-        <button class="setup-btn" data-setup="r2g">Red to Green</button>
-        <button class="setup-btn" data-setup="hod">HOD Break</button>
-        <button class="setup-btn" data-setup="ema">EMA Bounce</button>
+    <div class="stats-bar">
+        <div class="stat"><div class="stat-value green" id="correct">0</div><div class="stat-label">Correct</div></div>
+        <div class="stat"><div class="stat-value red" id="wrong">0</div><div class="stat-label">Wrong</div></div>
+        <div class="stat"><div class="stat-value yellow" id="streak">0</div><div class="stat-label">Streak 🔥</div></div>
+        <div class="stat"><div class="stat-value" id="accuracy" style="color:#00d4ff">0%</div><div class="stat-label">Accuracy</div></div>
     </div>
-    
-    <div class="main">
-        <div class="chart-area">
-            <div class="chart-header">
-                <div class="ticker-info">
-                    <span class="ticker" id="ticker">NVDA</span>
-                    <span class="price" id="price">$45.67</span>
-                    <span class="change" id="change">+12.5%</span>
+
+    <!-- PRACTICE PAGE -->
+    <div class="page active" id="page-practice">
+        <div class="setup-selector" id="setupSelector"></div>
+        <div class="practice-grid">
+            <div class="chart-area">
+                <div class="chart-header">
+                    <div class="ticker-info">
+                        <span class="ticker" id="ticker">NVDA</span>
+                        <span class="price" id="price">$45.67</span>
+                        <span class="change" id="change">+12.5%</span>
+                    </div>
                 </div>
-            </div>
-            <div class="chart-container">
-                <div class="price-axis" id="priceAxis"></div>
-                <div class="candle-chart" id="chart"></div>
-                <div class="volume-chart" id="volumeChart"></div>
-                <div class="volume-label">Volume</div>
-            </div>
-            <div class="indicators" id="indicators"></div>
-        </div>
-        
-        <div class="sidebar">
-            <div class="card">
-                <h3 id="setup-name">Parabolic Washout Long <span class="setup-type">PARABOLIC</span></h3>
-                <ul class="rules" id="rules"></ul>
-            </div>
-            
-            <div class="card">
-                <div class="question">Is this a valid entry?</div>
-                <div class="buttons">
-                    <button class="btn btn-valid" id="btnValid" onclick="answer(true)">✅ VALID ENTRY</button>
-                    <button class="btn btn-skip" id="btnSkip" onclick="answer(false)">❌ NO SETUP</button>
-                    <button class="btn btn-next" id="btnNext" onclick="nextScenario()">Next →</button>
+                <div class="chart-container">
+                    <div class="price-axis" id="priceAxis"></div>
+                    <div class="candle-chart" id="chart"></div>
+                    <div class="volume-chart" id="volumeChart"></div>
+                    <div class="volume-label">Vol</div>
                 </div>
-                <div class="feedback" id="feedback">
-                    <h4 id="feedbackTitle"></h4>
-                    <p id="feedbackText"></p>
+                <div class="indicators" id="indicators"></div>
+            </div>
+            <div class="sidebar">
+                <div class="card">
+                    <h3 id="setup-name">Loading... <span class="setup-type" id="setup-type">SETUP</span></h3>
+                    <ul class="rules" id="rules"></ul>
                 </div>
-                <div class="swipe-hint">👆 Swipe left for next</div>
+                <div class="card">
+                    <div class="question">Is this a valid entry?</div>
+                    <div class="buttons">
+                        <button class="btn btn-valid" id="btnValid" onclick="answer(true)">✅ VALID ENTRY</button>
+                        <button class="btn btn-skip" id="btnSkip" onclick="answer(false)">❌ NO SETUP</button>
+                        <button class="btn btn-next" id="btnNext" onclick="nextScenario()">Next →</button>
+                    </div>
+                    <div class="feedback" id="feedback"><h4 id="feedbackTitle"></h4><p id="feedbackText"></p></div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- LIBRARY PAGE -->
+    <div class="page" id="page-library">
+        <div class="library-header">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search setups..." oninput="filterLibrary()">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+            <button class="filter-btn" data-filter="valid" onclick="setFilter('valid')">Valid Only</button>
+            <button class="filter-btn" data-filter="invalid" onclick="setFilter('invalid')">Invalid Only</button>
+        </div>
+        <div class="setup-grid" id="setupGrid"></div>
+    </div>
+
+    <!-- CREATE PAGE -->
+    <div class="page" id="page-create">
+        <div class="create-form">
+            <h2 style="color:#00d4ff;margin-bottom:20px;">Create New Setup</h2>
+            
+            <div class="form-group">
+                <label>Setup Name</label>
+                <input type="text" id="newName" placeholder="e.g., Gap and Go">
+            </div>
+            
+            <div class="form-group">
+                <label>Type/Category</label>
+                <input type="text" id="newType" placeholder="e.g., GAP">
+            </div>
+            
+            <div class="form-group">
+                <label>Rules (one per line)</label>
+                <textarea id="newRules" placeholder="Stock gaps up 5%+&#10;First candle is green&#10;Buy break of first candle high"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Candle Pattern (g=green, r=red, G=big green, R=big red, add - for pullback)</label>
+                <input type="text" id="newPattern" placeholder="e.g., g,g,G,G,G,g,g,g-">
+            </div>
+            
+            <div class="form-group">
+                <label>Is this a valid setup example?</label>
+                <select id="newValid">
+                    <option value="true">Yes - Valid Entry</option>
+                    <option value="false">No - Invalid/Skip</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Explanation</label>
+                <textarea id="newReason" placeholder="Explain why this is valid or invalid..."></textarea>
+            </div>
+            
+            <button class="btn btn-valid" onclick="saveSetup()" style="width:100%;margin-bottom:15px;">💾 Save Setup</button>
+            
+            <div style="text-align:center;color:#666;margin:20px 0;">— or —</div>
+            
+            <button class="ai-btn" onclick="showAIModal()" style="width:100%;">🤖 Generate with AI</button>
+        </div>
+    </div>
+
+    <!-- AI Modal -->
+    <div id="aiModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;padding:20px;overflow:auto;">
+        <div style="max-width:500px;margin:50px auto;background:#16213e;border-radius:15px;padding:25px;border:1px solid #333;">
+            <h3 style="color:#00d4ff;margin-bottom:15px;">🤖 AI Setup Generator</h3>
+            <p style="color:#888;margin-bottom:15px;font-size:0.9em;">Describe the setup you want to create and I'll generate it for you.</p>
+            <textarea id="aiPrompt" style="width:100%;height:120px;padding:12px;background:#0d1117;border:1px solid #333;border-radius:8px;color:#fff;margin-bottom:15px;" placeholder="Describe your setup...&#10;&#10;Example: Create a setup for buying breakouts above the opening 5-minute high with volume confirmation"></textarea>
+            <div style="display:flex;gap:10px;">
+                <button class="btn btn-valid" onclick="generateAI()" style="flex:1;">Generate</button>
+                <button class="btn" onclick="closeAIModal()" style="flex:1;background:#333;">Cancel</button>
+            </div>
+            <div id="aiResult" style="margin-top:15px;display:none;"></div>
+        </div>
+    </div>
+
     <script>
-        const SETUPS = [
+        // ============== SETUP DATA ==============
+        let SETUPS = [
             {
-                id: 'parabolic',
-                name: 'Parabolic Washout Long',
-                type: 'PARABOLIC',
+                id: 'parabolic', name: 'Parabolic Washout Long', type: 'PARABOLIC',
                 rules: ['All green on 1-min', '5+ green on 3-min', '3+ green on 5-min', 'First pullback to support', 'NOT 2nd red at support'],
-                valid: [
-                    { candles: ['g','g','g','g','g','G','G','G','G','G','g','g','g-'], volumes: [1,1,1,1.5,2,3,3.5,3,2,2,1.5,1,0.8], reason: '✅ All timeframes green, first pullback to support with declining volume - valid entry!' },
-                    { candles: ['g','g','g','G','G','G','G','g','g','g','g-'], volumes: [1,1.5,2,3,4,3.5,3,2,1.5,1,0.7], reason: '✅ Strong parabolic move, volume dried up on pullback - valid!' }
-                ],
-                invalid: [
-                    { candles: ['g','g','g','g','r','g','g','r','r','g'], volumes: [1,1,1,1,2,1,1,2,2,1], reason: '❌ Mixed candles - not a parabolic move, choppy action.' },
-                    { candles: ['g','g','g','G','G','G','r','r','g'], volumes: [1,2,2,3,3,2,3,3,1], reason: '❌ Second red candle at support with volume - selling pressure.' },
-                    { candles: ['g','g','G','G','G','G','G','G'], volumes: [1,2,3,4,4,3,3,2], reason: '❌ No pullback yet - would be chasing extended move.' }
+                scenarios: [
+                    { candles: ['g','g','g','g','g','G','G','G','G','G','g','g','g-'], volumes: [1,1,1,1.5,2,3,3.5,3,2.5,2,1.5,1,0.8], valid: true, reason: '✅ Perfect parabolic - all green, volume climax, pullback on low volume.' },
+                    { candles: ['g','g','g','G','G','G','G','g','g','g','g-'], volumes: [1,1.5,2,3,4,3.5,3,2,1.5,1,0.7], valid: true, reason: '✅ Strong momentum, healthy pullback with volume dry-up.' },
+                    { candles: ['g','g','G','G','G','G','g','g','g','g','g-'], volumes: [1,2,3,4,4,3,2,1.5,1,1,0.8], valid: true, reason: '✅ Clean parabolic structure, first touch of support.' },
+                    { candles: ['g','g','g','g','G','G','G','g','g','g-'], volumes: [1,1,1.5,2,4,3,2.5,1.5,1,0.8], valid: true, reason: '✅ Nice build-up, volume confirms move, pullback is healthy.' },
+                    { candles: ['g','g','g','G','G','G','G','G','g','g','g-'], volumes: [1,1.5,2,3,3.5,4,3.5,3,2,1.5,1], valid: true, reason: '✅ Extended but still valid first pullback to support.' },
+                    { candles: ['g','g','g','g','r','g','g','r','r','g'], volumes: [1,1,1,1,2,1,1,2,2,1], valid: false, reason: '❌ Mixed candles, no clear parabolic move - avoid.' },
+                    { candles: ['g','g','g','G','G','G','r','r','g'], volumes: [1,2,2,3,3,2,3,3,1], valid: false, reason: '❌ Second red at support with volume - selling pressure.' },
+                    { candles: ['g','g','G','G','G','G','G','G'], volumes: [1,2,3,4,4,3,3,2], valid: false, reason: '❌ No pullback yet - chasing extended move.' },
+                    { candles: ['g','r','g','g','r','g','G','g'], volumes: [1,1,1,1,1,1,2,1], valid: false, reason: '❌ Choppy start, not a clean parabolic.' },
+                    { candles: ['g','g','g','G','G','r','g','r','g'], volumes: [1,1,2,3,3,2,1,2,1], valid: false, reason: '❌ Failed to hold gains, showing weakness.' }
                 ]
             },
             {
-                id: 'vwap',
-                name: 'VWAP Reclaim',
-                type: 'VWAP',
+                id: 'vwap', name: 'VWAP Reclaim', type: 'VWAP',
                 rules: ['Was below VWAP', 'Reclaimed with volume', 'All TFs green above VWAP', 'First pullback to VWAP'],
-                valid: [
-                    { candles: ['r','r','r','r','g','G','G','g','g','g','g-'], volumes: [1,1,1,1,2,3,3,2,1.5,1,0.8], reason: '✅ Clean reclaim with volume, holding above VWAP, first pullback - valid!' }
-                ],
-                invalid: [
-                    { candles: ['r','g','r','g','r','g','r','g'], volumes: [1,1,1,1,1,1,1,1], reason: '❌ Chopping around VWAP - no clear control, avoid.' },
-                    { candles: ['r','r','g','g','r','r','g'], volumes: [1,1,2,1,2,2,1], reason: '❌ Failed reclaim - rejected back below with selling.' }
+                scenarios: [
+                    { candles: ['r','r','r','r','g','G','G','g','g','g','g-'], volumes: [1,1,1,1,2,3,3,2,1.5,1,0.8], valid: true, reason: '✅ Clean VWAP reclaim with volume, holding above.' },
+                    { candles: ['r','r','r','g','g','G','G','g','g','g-'], volumes: [1,1,1,1.5,2,3,2.5,2,1.5,1], valid: true, reason: '✅ Gradual reclaim, now pulling back to test VWAP.' },
+                    { candles: ['R','r','r','g','G','G','g','g','g-'], volumes: [2,1,1,2,3,2.5,2,1.5,1], valid: true, reason: '✅ Strong reversal from below, reclaimed and holding.' },
+                    { candles: ['r','r','r','r','r','g','G','G','g','g','g-'], volumes: [1,1,1,1,1,2,4,3,2,1.5,1], valid: true, reason: '✅ Extended sell-off then powerful reclaim - valid.' },
+                    { candles: ['r','r','g','G','G','G','g','g','g-'], volumes: [1,1,2,3,3.5,3,2,1.5,1], valid: true, reason: '✅ Quick reclaim with conviction, first test.' },
+                    { candles: ['r','g','r','g','r','g','r','g'], volumes: [1,1,1,1,1,1,1,1], valid: false, reason: '❌ Chopping around VWAP - no clear control.' },
+                    { candles: ['r','r','g','g','r','r','g'], volumes: [1,1,2,1,2,2,1], valid: false, reason: '❌ Failed reclaim, back below VWAP.' },
+                    { candles: ['r','r','r','g','r','g','r'], volumes: [1,1,1,1,1,1,1], valid: false, reason: '❌ Can\'t hold above VWAP, weak.' },
+                    { candles: ['r','g','g','r','r','r','g'], volumes: [1,1,1,2,2,1,1], valid: false, reason: '❌ Bearish continuation, avoid longs.' },
+                    { candles: ['r','r','g','g','g','r','r'], volumes: [1,1,1,1,1,2,2], valid: false, reason: '❌ Reclaim failed with selling volume.' }
                 ]
             },
             {
-                id: 'r2g',
-                name: 'Red to Green',
-                type: 'R2G',
+                id: 'r2g', name: 'Red to Green', type: 'R2G',
                 rules: ['Stock was RED', 'Crossed to GREEN', 'Timeframes aligned', 'First pullback to prev close'],
-                valid: [
-                    { candles: ['r','r','r','R','g','G','G','G','g','g','g-'], volumes: [1,1,1,2,2,3,3,2,1.5,1,0.8], reason: '✅ Clean R2G reversal, shorts trapped, first pullback - valid!' }
-                ],
-                invalid: [
-                    { candles: ['r','r','g','r','g','r','g'], volumes: [1,1,1,1,1,1,1], reason: '❌ Fighting at zero line - no clear winner yet.' },
-                    { candles: ['r','g','r','r','r','g'], volumes: [1,1,2,2,1,1], reason: '❌ Weak bounce, sellers still in control.' }
+                scenarios: [
+                    { candles: ['r','r','r','R','g','G','G','G','g','g','g-'], volumes: [1,1,1,2,2,3,3,2,1.5,1,0.8], valid: true, reason: '✅ Classic R2G, shorts trapped, first pullback.' },
+                    { candles: ['r','r','R','g','g','G','G','g','g','g-'], volumes: [1,1,2,2,2,3,2.5,2,1.5,1], valid: true, reason: '✅ Sharp reversal, now testing the flip level.' },
+                    { candles: ['R','r','r','g','G','G','g','g','g-'], volumes: [2,1,1,2,3,3,2,1.5,1], valid: true, reason: '✅ Capitulation candle then reversal - valid.' },
+                    { candles: ['r','r','r','g','g','g','G','G','g','g-'], volumes: [1,1,1,1.5,2,2,3,2.5,2,1], valid: true, reason: '✅ Building momentum, crossed green, pullback entry.' },
+                    { candles: ['r','R','g','G','G','G','g','g','g-'], volumes: [1,2,2,3,3.5,3,2,1.5,1], valid: true, reason: '✅ V-bottom reversal, strong R2G setup.' },
+                    { candles: ['r','r','g','r','g','r','g'], volumes: [1,1,1,1,1,1,1], valid: false, reason: '❌ Fighting at zero line - no winner yet.' },
+                    { candles: ['r','g','r','r','r','g'], volumes: [1,1,2,2,1,1], valid: false, reason: '❌ Weak bounce, sellers still control.' },
+                    { candles: ['r','r','g','g','r','r','r'], volumes: [1,1,1,1,2,2,1], valid: false, reason: '❌ R2G failed, back to red.' },
+                    { candles: ['r','g','g','r','r','g','r'], volumes: [1,1,1,1,1,1,1], valid: false, reason: '❌ Can\'t hold green, avoid.' },
+                    { candles: ['r','r','r','g','r','r'], volumes: [1,1,1,1,2,1], valid: false, reason: '❌ Dead cat bounce, continuation down.' }
                 ]
             },
             {
-                id: 'hod',
-                name: 'HOD Breakout',
-                type: 'HOD',
+                id: 'hod', name: 'HOD Breakout', type: 'HOD',
                 rules: ['Broke High of Day', 'Volume on break', 'All TFs aligned', 'First pullback to old HOD'],
-                valid: [
-                    { candles: ['g','g','g','g','G','G','g','g','g-'], volumes: [1,1,1,2,4,3,2,1.5,1], reason: '✅ Clean HOD break with volume, first retest - valid entry!' }
-                ],
-                invalid: [
-                    { candles: ['g','g','g','G','r','r','g'], volumes: [1,1,2,3,2,2,1], reason: '❌ Failed breakout - rejected at HOD, avoid.' },
-                    { candles: ['g','r','g','r','g','G','r'], volumes: [1,1,1,1,1,2,1], reason: '❌ Choppy, no clean break - messy price action.' }
+                scenarios: [
+                    { candles: ['g','g','g','g','G','G','g','g','g-'], volumes: [1,1,1,2,4,3,2,1.5,1], valid: true, reason: '✅ Clean HOD break with volume, first retest.' },
+                    { candles: ['g','g','g','G','G','G','g','g','g-'], volumes: [1,1,2,3,4,3,2,1.5,1], valid: true, reason: '✅ Strong breakout, healthy consolidation.' },
+                    { candles: ['g','g','G','G','g','g','G','g','g-'], volumes: [1,2,3,3,2,2,3,2,1], valid: true, reason: '✅ Multiple pushes higher, pulling back to test.' },
+                    { candles: ['g','r','g','g','G','G','g','g','g-'], volumes: [1,1,1,2,4,3,2,1.5,1], valid: true, reason: '✅ Shakeout before break, now retest.' },
+                    { candles: ['g','g','g','G','G','G','G','g','g-'], volumes: [1,1.5,2,3,3.5,3,2.5,2,1.5], valid: true, reason: '✅ Trending day, HOD break and test.' },
+                    { candles: ['g','g','g','G','r','r','g'], volumes: [1,1,2,3,2,2,1], valid: false, reason: '❌ Failed breakout, rejected at HOD.' },
+                    { candles: ['g','r','g','r','g','G','r'], volumes: [1,1,1,1,1,2,1], valid: false, reason: '❌ Choppy, no clean break.' },
+                    { candles: ['g','g','G','r','r','r','g'], volumes: [1,1,3,2,2,1,1], valid: false, reason: '❌ HOD rejection, bearish.' },
+                    { candles: ['g','g','g','g','r','g','r'], volumes: [1,1,1,1,1,1,1], valid: false, reason: '❌ Can\'t break HOD, distribution.' },
+                    { candles: ['g','G','r','r','g','r','r'], volumes: [1,3,2,1,1,1,1], valid: false, reason: '❌ Spike and fade, avoid.' }
                 ]
             },
             {
-                id: 'ema',
-                name: '9 EMA Bounce',
-                type: 'EMA',
+                id: 'ema', name: '9 EMA Bounce', type: 'EMA',
                 rules: ['Strong uptrend', 'Riding 9 EMA', 'All TFs above EMA', 'First touch of EMA'],
-                valid: [
-                    { candles: ['g','g','G','g','g','G','g','g','g-'], volumes: [1,1,2,1.5,1,2,1.5,1,0.8], reason: '✅ Trending above EMA, first touch with low volume - valid bounce entry!' }
-                ],
-                invalid: [
-                    { candles: ['g','g','r','g','r','g','r'], volumes: [1,1,1,1,1,1,1], reason: '❌ Broke below EMA, no longer clean trend.' },
-                    { candles: ['g','r','r','g','g','r','r'], volumes: [1,2,2,1,1,2,2], reason: '❌ EMA broken with volume, trend over.' }
+                scenarios: [
+                    { candles: ['g','g','G','g','g','G','g','g','g-'], volumes: [1,1,2,1.5,1,2,1.5,1,0.8], valid: true, reason: '✅ Clean trend, riding EMA, first touch.' },
+                    { candles: ['g','G','g','g','g','G','g','g-'], volumes: [1,2,1.5,1,1,2,1.5,1], valid: true, reason: '✅ Higher highs, EMA acting as support.' },
+                    { candles: ['G','g','g','g','g','g','G','g','g-'], volumes: [2,1.5,1,1,1,1,2,1.5,1], valid: true, reason: '✅ Trend intact, pullback to EMA entry.' },
+                    { candles: ['g','g','g','G','g','g','g','g-'], volumes: [1,1,1.5,2,1.5,1,1,0.8], valid: true, reason: '✅ Smooth trend, EMA bounce setup.' },
+                    { candles: ['g','G','G','g','g','g','g','g-'], volumes: [1,2,2.5,2,1.5,1,1,0.8], valid: true, reason: '✅ Strong move, now testing EMA.' },
+                    { candles: ['g','g','r','g','r','g','r'], volumes: [1,1,1,1,1,1,1], valid: false, reason: '❌ Lost EMA, trend broken.' },
+                    { candles: ['g','r','r','g','g','r','r'], volumes: [1,2,2,1,1,2,2], valid: false, reason: '❌ EMA broken with volume, avoid.' },
+                    { candles: ['G','r','r','r','g','r'], volumes: [2,1,1,1,1,1], valid: false, reason: '❌ Trend exhaustion, EMA fail.' },
+                    { candles: ['g','g','r','r','g','r','r'], volumes: [1,1,1,1,1,1,1], valid: false, reason: '❌ No trend, random chop.' },
+                    { candles: ['g','G','r','r','r','g'], volumes: [1,2,2,1,1,1], valid: false, reason: '❌ Breakdown, not a bounce.' }
                 ]
             }
         ];
         
+        // Load custom setups from localStorage
+        const customSetups = JSON.parse(localStorage.getItem('customSetups') || '[]');
+        SETUPS = [...SETUPS, ...customSetups];
+        
         let current = null;
         let stats = { correct: 0, wrong: 0, streak: 0 };
         let selectedSetup = 'all';
-        let touchStartX = 0;
+        let libraryFilter = 'all';
         
-        // Setup selector
-        document.querySelectorAll('.setup-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedSetup = btn.dataset.setup;
-                loadScenario();
+        // ============== NAVIGATION ==============
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelector(`[onclick="showPage('${page}')"]`).classList.add('active');
+            
+            if (page === 'library') renderLibrary();
+        }
+        
+        // ============== SETUP SELECTOR ==============
+        function renderSetupSelector() {
+            const container = document.getElementById('setupSelector');
+            container.innerHTML = `<button class="setup-btn active" data-setup="all">All Setups</button>`;
+            SETUPS.forEach(s => {
+                container.innerHTML += `<button class="setup-btn" data-setup="${s.id}">${s.name}</button>`;
             });
-        });
+            container.querySelectorAll('.setup-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedSetup = btn.dataset.setup;
+                    loadScenario();
+                });
+            });
+        }
         
-        // Swipe support
-        document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
-        document.addEventListener('touchend', e => {
-            const diff = touchStartX - e.changedTouches[0].clientX;
-            if (diff > 50 && document.getElementById('btnNext').style.display !== 'none') {
-                nextScenario();
-            }
-        });
-        
+        // ============== CHART DRAWING ==============
         function generateCandles(pattern) {
-            return pattern.map(c => {
-                const isGreen = c.includes('g') || c.includes('G');
-                const isBig = c.includes('G') || c.includes('R');
-                const isPullback = c.includes('-');
-                return { green: isGreen, big: isBig, pullback: isPullback };
-            });
+            return pattern.map(c => ({
+                green: c.includes('g') || c.includes('G'),
+                big: c.includes('G') || c.includes('R'),
+                pullback: c.includes('-')
+            }));
         }
         
         function drawChart(candles, volumes) {
@@ -472,26 +456,23 @@
             chart.innerHTML = '';
             volumeChart.innerHTML = '';
             
-            // Generate random base price
             const basePrice = 20 + Math.random() * 60;
             let prices = [basePrice];
             
-            // Add grid lines
             for (let i = 0; i < 4; i++) {
                 const grid = document.createElement('div');
                 grid.className = 'grid-line';
-                grid.style.bottom = (50 + i * 50) + 'px';
+                grid.style.bottom = (40 + i * 45) + 'px';
                 chart.appendChild(grid);
             }
             
-            // Draw candles
             candles.forEach((c, i) => {
                 const div = document.createElement('div');
                 div.className = `candle ${c.green ? 'green' : 'red'}`;
                 
-                const bodyHeight = c.big ? (50 + Math.random()*30) : (15 + Math.random()*25);
-                const wickTop = 3 + Math.random()*10;
-                const wickBottom = c.pullback ? (12 + Math.random()*8) : (3 + Math.random()*8);
+                const bodyHeight = c.big ? (40 + Math.random()*25) : (12 + Math.random()*20);
+                const wickTop = 2 + Math.random()*8;
+                const wickBottom = c.pullback ? (10 + Math.random()*6) : (2 + Math.random()*6);
                 
                 const body = document.createElement('div');
                 body.className = 'candle-body';
@@ -500,7 +481,7 @@
                 const wickT = document.createElement('div');
                 wickT.className = 'candle-wick';
                 wickT.style.height = wickTop + 'px';
-                wickT.style.bottom = (bodyHeight) + 'px';
+                wickT.style.bottom = bodyHeight + 'px';
                 
                 const wickB = document.createElement('div');
                 wickB.className = 'candle-wick';
@@ -511,101 +492,57 @@
                 div.appendChild(body);
                 div.appendChild(wickB);
                 
-                const bottom = 60 + (c.big ? 15 : 0) + (i * 4) + (c.green ? 4 : -2);
+                const bottom = 50 + (c.big ? 12 : 0) + (i * 3) + (c.green ? 3 : -2);
                 div.style.marginBottom = bottom + 'px';
                 
-                // Track price
-                const priceChange = c.green ? (c.big ? 2 : 0.5) : (c.big ? -2 : -0.5);
-                prices.push(prices[prices.length-1] + priceChange);
-                
+                prices.push(prices[prices.length-1] + (c.green ? (c.big ? 1.5 : 0.4) : (c.big ? -1.5 : -0.4)));
                 chart.appendChild(div);
                 
-                // Volume bar
                 const vol = document.createElement('div');
-                vol.className = `volume-bar ${c.green ? 'green' : 'red'} ${volumes[i] > 2 ? 'high' : ''}`;
-                vol.style.height = (volumes[i] * 12) + 'px';
+                vol.className = `volume-bar ${c.green ? 'green' : 'red'}`;
+                vol.style.height = (volumes[i] * 10) + 'px';
                 volumeChart.appendChild(vol);
             });
             
-            // Support line
             const support = document.createElement('div');
             support.className = 'support-line';
-            support.style.bottom = '75px';
+            support.style.bottom = '65px';
             chart.appendChild(support);
             
             const label = document.createElement('div');
             label.className = 'support-label';
-            label.style.bottom = '75px';
-            label.textContent = '$' + (basePrice + 3).toFixed(2);
+            label.style.bottom = '65px';
+            label.textContent = '$' + (basePrice + 2).toFixed(2);
             chart.appendChild(label);
             
-            // Price axis
-            const priceAxis = document.getElementById('priceAxis');
-            const maxPrice = Math.max(...prices) + 2;
-            const minPrice = Math.min(...prices) - 2;
-            priceAxis.innerHTML = `
-                <span>$${maxPrice.toFixed(2)}</span>
-                <span>$${((maxPrice + minPrice) / 2).toFixed(2)}</span>
-                <span>$${minPrice.toFixed(2)}</span>
-            `;
-            
-            // Update header price
+            const maxP = Math.max(...prices), minP = Math.min(...prices);
+            document.getElementById('priceAxis').innerHTML = `<span>$${maxP.toFixed(2)}</span><span>$${((maxP+minP)/2).toFixed(2)}</span><span>$${minP.toFixed(2)}</span>`;
             document.getElementById('price').textContent = '$' + prices[prices.length-1].toFixed(2);
         }
         
         function updateIndicators(candles) {
-            const container = document.getElementById('indicators');
-            const consecutive = countConsecutiveGreen(candles);
-            
-            const pass1 = consecutive >= 5;
-            const pass3 = consecutive >= 4;
-            const pass5 = consecutive >= 3;
-            
-            container.innerHTML = `
-                <div class="indicator ${pass1 ? 'pass' : 'fail'}">1m: ${consecutive} green ${pass1 ? '✓' : '✗'}</div>
-                <div class="indicator ${pass3 ? 'pass' : 'fail'}">3m: ${Math.ceil(consecutive*0.8)} green ${pass3 ? '✓' : '✗'}</div>
-                <div class="indicator ${pass5 ? 'pass' : 'fail'}">5m: ${Math.ceil(consecutive*0.6)} green ${pass5 ? '✓' : '✗'}</div>
+            let count = 0;
+            for (let i = candles.length - 1; i >= 0 && candles[i].green; i--) count++;
+            document.getElementById('indicators').innerHTML = `
+                <div class="indicator ${count >= 5 ? 'pass' : 'fail'}">1m: ${count} green</div>
+                <div class="indicator ${count >= 4 ? 'pass' : 'fail'}">3m: ~${Math.ceil(count*0.7)} green</div>
+                <div class="indicator ${count >= 3 ? 'pass' : 'fail'}">5m: ~${Math.ceil(count*0.5)} green</div>
             `;
         }
         
-        function countConsecutiveGreen(candles) {
-            let count = 0;
-            for (let i = candles.length - 1; i >= 0; i--) {
-                if (candles[i].green) count++;
-                else break;
-            }
-            return count;
-        }
-        
+        // ============== PRACTICE ==============
         function loadScenario() {
-            let availableSetups = SETUPS;
-            if (selectedSetup !== 'all') {
-                availableSetups = SETUPS.filter(s => s.id === selectedSetup);
-            }
+            let setups = selectedSetup === 'all' ? SETUPS : SETUPS.filter(s => s.id === selectedSetup);
+            const setup = setups[Math.floor(Math.random() * setups.length)];
+            const scenario = setup.scenarios[Math.floor(Math.random() * setup.scenarios.length)];
             
-            const setup = availableSetups[Math.floor(Math.random() * availableSetups.length)];
-            const isValid = Math.random() > 0.45;
+            current = { setup, ...scenario, candles: generateCandles(scenario.candles) };
             
-            let scenario;
-            if (isValid) {
-                scenario = setup.valid[Math.floor(Math.random() * setup.valid.length)];
-            } else {
-                scenario = setup.invalid[Math.floor(Math.random() * setup.invalid.length)];
-            }
-            
-            current = { 
-                setup, 
-                isValid, 
-                reason: scenario.reason, 
-                candles: generateCandles(scenario.candles),
-                volumes: scenario.volumes
-            };
-            
-            // Update UI
-            document.getElementById('setup-name').innerHTML = `${setup.name} <span class="setup-type">${setup.type}</span>`;
+            document.getElementById('setup-name').textContent = setup.name;
+            document.getElementById('setup-type').textContent = setup.type;
             document.getElementById('rules').innerHTML = setup.rules.map(r => `<li>${r}</li>`).join('');
             
-            const tickers = ['NVDA','TSLA','AMD','SMCI','MARA','IONQ','RGTI','PLTR','COIN','MSTR','SOFI','RKLB'];
+            const tickers = ['NVDA','TSLA','AMD','SMCI','MARA','IONQ','RGTI','PLTR','COIN','MSTR'];
             document.getElementById('ticker').textContent = tickers[Math.floor(Math.random()*tickers.length)];
             document.getElementById('change').textContent = `+${(5+Math.random()*20).toFixed(1)}%`;
             
@@ -619,23 +556,18 @@
         }
         
         function answer(saidValid) {
-            const isCorrect = saidValid === current.isValid;
-            
-            if (isCorrect) {
-                stats.correct++;
-                stats.streak++;
-            } else {
-                stats.wrong++;
-                stats.streak = 0;
-            }
+            const isCorrect = saidValid === current.valid;
+            if (isCorrect) { stats.correct++; stats.streak++; }
+            else { stats.wrong++; stats.streak = 0; }
             
             document.getElementById('correct').textContent = stats.correct;
             document.getElementById('wrong').textContent = stats.wrong;
             document.getElementById('streak').textContent = stats.streak;
+            document.getElementById('accuracy').textContent = Math.round((stats.correct/(stats.correct+stats.wrong))*100) + '%';
             
-            const feedback = document.getElementById('feedback');
-            feedback.style.display = 'block';
-            feedback.className = `feedback ${isCorrect ? 'correct' : 'wrong'}`;
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'block';
+            fb.className = `feedback ${isCorrect ? 'correct' : 'wrong'}`;
             document.getElementById('feedbackTitle').textContent = isCorrect ? '✅ Correct!' : '❌ Wrong';
             document.getElementById('feedbackText').textContent = current.reason;
             
@@ -644,10 +576,114 @@
             document.getElementById('btnNext').style.display = 'block';
         }
         
-        function nextScenario() {
-            loadScenario();
+        function nextScenario() { loadScenario(); }
+        
+        // ============== LIBRARY ==============
+        function renderLibrary() {
+            const grid = document.getElementById('setupGrid');
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            grid.innerHTML = '';
+            
+            SETUPS.forEach(setup => {
+                setup.scenarios.forEach((s, i) => {
+                    if (libraryFilter === 'valid' && !s.valid) return;
+                    if (libraryFilter === 'invalid' && s.valid) return;
+                    if (search && !setup.name.toLowerCase().includes(search) && !s.reason.toLowerCase().includes(search)) return;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'setup-card';
+                    card.innerHTML = `
+                        <h4>${setup.name}</h4>
+                        <p>${s.reason.substring(0, 80)}...</p>
+                        <div class="tags">
+                            <span class="tag">${setup.type}</span>
+                            <span class="tag ${s.valid ? 'valid' : 'invalid'}">${s.valid ? 'Valid' : 'Invalid'}</span>
+                        </div>
+                    `;
+                    card.onclick = () => practiceSpecific(setup, s);
+                    grid.appendChild(card);
+                });
+            });
         }
         
+        function filterLibrary() { renderLibrary(); }
+        function setFilter(f) {
+            libraryFilter = f;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+            renderLibrary();
+        }
+        
+        function practiceSpecific(setup, scenario) {
+            current = { setup, ...scenario, candles: generateCandles(scenario.candles) };
+            showPage('practice');
+            
+            document.getElementById('setup-name').textContent = setup.name;
+            document.getElementById('setup-type').textContent = setup.type;
+            document.getElementById('rules').innerHTML = setup.rules.map(r => `<li>${r}</li>`).join('');
+            
+            const tickers = ['NVDA','TSLA','AMD'];
+            document.getElementById('ticker').textContent = tickers[Math.floor(Math.random()*tickers.length)];
+            document.getElementById('change').textContent = `+${(5+Math.random()*20).toFixed(1)}%`;
+            
+            drawChart(current.candles, current.volumes);
+            updateIndicators(current.candles);
+            
+            document.getElementById('btnValid').disabled = false;
+            document.getElementById('btnSkip').disabled = false;
+            document.getElementById('btnNext').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+        }
+        
+        // ============== CREATE ==============
+        function saveSetup() {
+            const name = document.getElementById('newName').value.trim();
+            const type = document.getElementById('newType').value.trim().toUpperCase();
+            const rules = document.getElementById('newRules').value.trim().split('\n').filter(r => r);
+            const pattern = document.getElementById('newPattern').value.trim().split(',').map(s => s.trim());
+            const valid = document.getElementById('newValid').value === 'true';
+            const reason = document.getElementById('newReason').value.trim();
+            
+            if (!name || !type || !rules.length || !pattern.length || !reason) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            const id = name.toLowerCase().replace(/\s+/g, '-');
+            const existing = SETUPS.find(s => s.id === id);
+            
+            if (existing) {
+                existing.scenarios.push({ candles: pattern, volumes: pattern.map(() => 1 + Math.random()), valid, reason });
+            } else {
+                SETUPS.push({ id, name, type, rules, scenarios: [{ candles: pattern, volumes: pattern.map(() => 1 + Math.random()), valid, reason }] });
+            }
+            
+            // Save to localStorage
+            const custom = SETUPS.filter(s => !['parabolic','vwap','r2g','hod','ema'].includes(s.id));
+            localStorage.setItem('customSetups', JSON.stringify(custom));
+            
+            renderSetupSelector();
+            alert('Setup saved!');
+            
+            // Clear form
+            document.getElementById('newName').value = '';
+            document.getElementById('newType').value = '';
+            document.getElementById('newRules').value = '';
+            document.getElementById('newPattern').value = '';
+            document.getElementById('newReason').value = '';
+        }
+        
+        function showAIModal() { document.getElementById('aiModal').style.display = 'block'; }
+        function closeAIModal() { document.getElementById('aiModal').style.display = 'none'; }
+        
+        function generateAI() {
+            const prompt = document.getElementById('aiPrompt').value;
+            const result = document.getElementById('aiResult');
+            result.style.display = 'block';
+            result.innerHTML = '<p style="color:#f7b731;">⏳ AI generation would connect to an API here...</p><p style="color:#888;margin-top:10px;">For now, manually create setups using the form. In a full version, this would use GPT/Claude to generate setup patterns based on your description.</p>';
+        }
+        
+        // ============== INIT ==============
+        renderSetupSelector();
         loadScenario();
     </script>
 </body>
