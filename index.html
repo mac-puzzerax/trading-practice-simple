@@ -11,74 +11,130 @@
             background: #1a1a2e;
             color: #fff;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
+            touch-action: pan-y;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #333;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        h1 { color: #00d4ff; font-size: 1.8em; }
-        .stats { display: flex; gap: 30px; }
+        h1 { color: #00d4ff; font-size: 1.5em; }
+        .stats { display: flex; gap: 20px; }
         .stat { text-align: center; }
-        .stat-value { font-size: 2em; font-weight: bold; }
+        .stat-value { font-size: 1.8em; font-weight: bold; }
         .stat-value.green { color: #00ff88; }
         .stat-value.red { color: #ff6b6b; }
         .stat-value.yellow { color: #f7b731; }
-        .stat-label { color: #888; font-size: 0.9em; }
+        .stat-label { color: #888; font-size: 0.8em; }
         
-        .main { display: grid; grid-template-columns: 1fr 350px; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        /* Setup Selector */
+        .setup-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #0d1117;
+            border-radius: 12px;
+        }
+        .setup-btn {
+            padding: 10px 16px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: transparent;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        .setup-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+        .setup-btn.active { 
+            border-color: #00d4ff; 
+            background: #00d4ff20; 
+            color: #00d4ff;
+            font-weight: bold;
+        }
+        
+        .main { display: grid; grid-template-columns: 1fr 320px; gap: 20px; max-width: 1200px; margin: 0 auto; }
         
         .chart-area {
             background: #0d1117;
             border-radius: 15px;
-            padding: 25px;
+            padding: 20px;
             border: 1px solid #333;
         }
         .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .ticker { font-size: 1.5em; font-weight: bold; color: #00d4ff; }
-        .change { background: #00ff8830; color: #00ff88; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
-        .tf-tabs { display: flex; gap: 5px; }
-        .tf-tab {
-            padding: 8px 16px;
-            background: #1a1a2e;
-            border: 1px solid #333;
-            border-radius: 5px;
-            color: #888;
-            cursor: pointer;
+        .ticker-info { display: flex; align-items: center; gap: 12px; }
+        .ticker { font-size: 1.4em; font-weight: bold; color: #00d4ff; }
+        .change { background: #00ff8830; color: #00ff88; padding: 5px 12px; border-radius: 15px; font-weight: bold; font-size: 0.9em; }
+        .price { color: #fff; font-size: 1.2em; font-weight: bold; }
+        
+        .chart-container {
+            position: relative;
+            background: #0a0a12;
+            border-radius: 10px;
+            padding: 10px;
         }
-        .tf-tab.active { background: #00d4ff; color: #000; border-color: #00d4ff; }
+        
+        /* Price Axis */
+        .price-axis {
+            position: absolute;
+            right: 0;
+            top: 10px;
+            bottom: 60px;
+            width: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.75em;
+            color: #666;
+            text-align: right;
+            padding-right: 5px;
+        }
         
         .candle-chart {
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 4px;
-            height: 300px;
-            padding: 20px 10px;
-            background: #0a0a12;
-            border-radius: 10px;
+            gap: 6px;
+            height: 250px;
+            padding: 10px 60px 10px 10px;
             position: relative;
         }
+        
+        /* Grid lines */
+        .grid-line {
+            position: absolute;
+            left: 10px;
+            right: 60px;
+            height: 1px;
+            background: #ffffff10;
+        }
+        
         .candle {
-            width: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
+            width: 18px;
         }
         .candle-body {
-            width: 14px;
+            width: 12px;
             border-radius: 2px;
-            min-height: 10px;
+            min-height: 8px;
         }
         .candle-wick {
             width: 2px;
@@ -92,58 +148,88 @@
         .support-line {
             position: absolute;
             left: 10px;
-            right: 10px;
+            right: 60px;
             height: 2px;
             background: #f7b731;
-            opacity: 0.7;
+            z-index: 5;
         }
         .support-label {
             position: absolute;
-            right: 15px;
+            right: 65px;
             color: #f7b731;
-            font-size: 0.8em;
+            font-size: 0.75em;
             transform: translateY(-50%);
+            background: #0a0a12;
+            padding: 2px 5px;
+        }
+        
+        /* Volume */
+        .volume-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 6px;
+            height: 50px;
+            padding: 5px 60px 5px 10px;
+            border-top: 1px solid #333;
+            margin-top: 5px;
+        }
+        .volume-bar {
+            width: 12px;
+            border-radius: 2px 2px 0 0;
+            min-height: 3px;
+        }
+        .volume-bar.green { background: #00ff8860; }
+        .volume-bar.red { background: #ff6b6b60; }
+        .volume-bar.high { opacity: 1; }
+        
+        .volume-label {
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+            font-size: 0.7em;
+            color: #666;
         }
         
         .indicators {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 15px;
             flex-wrap: wrap;
         }
         .indicator {
-            padding: 8px 15px;
+            padding: 6px 12px;
             background: #1a1a2e;
-            border-radius: 8px;
-            font-size: 0.9em;
+            border-radius: 6px;
+            font-size: 0.85em;
         }
         .indicator.pass { color: #00ff88; border: 1px solid #00ff8850; }
         .indicator.fail { color: #ff6b6b; border: 1px solid #ff6b6b50; }
         
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 15px; }
         .card {
             background: #16213e;
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 12px;
+            padding: 18px;
             border: 1px solid #333;
         }
-        .card h3 { color: #00d4ff; margin-bottom: 15px; font-size: 1.2em; }
+        .card h3 { color: #00d4ff; margin-bottom: 12px; font-size: 1.1em; }
         .setup-type {
             display: inline-block;
             background: #00d4ff30;
             color: #00d4ff;
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-size: 0.75em;
-            margin-left: 10px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            margin-left: 8px;
         }
-        .rules { list-style: none; }
+        .rules { list-style: none; font-size: 0.9em; }
         .rules li {
-            padding: 8px 0;
-            padding-left: 20px;
+            padding: 6px 0;
+            padding-left: 15px;
             position: relative;
             color: #aaa;
-            border-bottom: 1px solid #ffffff10;
+            border-bottom: 1px solid #ffffff08;
         }
         .rules li:before {
             content: "•";
@@ -153,16 +239,16 @@
         }
         
         .question {
-            font-size: 1.2em;
-            margin-bottom: 20px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
             text-align: center;
         }
-        .buttons { display: flex; flex-direction: column; gap: 12px; }
+        .buttons { display: flex; flex-direction: column; gap: 10px; }
         .btn {
-            padding: 18px;
+            padding: 16px;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
+            border-radius: 10px;
+            font-size: 1em;
             font-weight: bold;
             cursor: pointer;
             transition: transform 0.15s, box-shadow 0.15s;
@@ -170,25 +256,40 @@
         .btn:hover { transform: translateY(-2px); }
         .btn:active { transform: translateY(0); }
         .btn-valid { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
-        .btn-valid:hover { box-shadow: 0 5px 25px #00ff8850; }
+        .btn-valid:hover { box-shadow: 0 5px 20px #00ff8850; }
         .btn-skip { background: #ff6b6b; color: #fff; }
-        .btn-skip:hover { box-shadow: 0 5px 25px #ff6b6b50; }
-        .btn-next { background: #00d4ff; color: #000; display: none; }
-        .btn-next:hover { box-shadow: 0 5px 25px #00d4ff50; }
+        .btn-skip:hover { box-shadow: 0 5px 20px #ff6b6b50; }
+        .btn-next { background: #00d4ff; color: #000; display: none; margin-top: 10px; }
+        .btn-next:hover { box-shadow: 0 5px 20px #00d4ff50; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
         
         .feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
             display: none;
+            font-size: 0.95em;
         }
         .feedback.correct { background: #00ff8820; border: 1px solid #00ff88; color: #00ff88; }
         .feedback.wrong { background: #ff6b6b20; border: 1px solid #ff6b6b; color: #ff6b6b; }
-        .feedback h4 { margin-bottom: 8px; }
+        .feedback h4 { margin-bottom: 5px; }
+        
+        /* Swipe hint */
+        .swipe-hint {
+            text-align: center;
+            color: #666;
+            font-size: 0.8em;
+            margin-top: 10px;
+            display: none;
+        }
         
         @media (max-width: 900px) {
             .main { grid-template-columns: 1fr; }
+            .swipe-hint { display: block; }
+            .candle-chart { height: 200px; }
+            .candle { width: 14px; }
+            .candle-body { width: 10px; }
+            .volume-bar { width: 10px; }
         }
     </style>
 </head>
@@ -211,20 +312,31 @@
         </div>
     </div>
     
+    <!-- Setup Selector -->
+    <div class="setup-selector">
+        <button class="setup-btn active" data-setup="all">All Setups</button>
+        <button class="setup-btn" data-setup="parabolic">Parabolic</button>
+        <button class="setup-btn" data-setup="vwap">VWAP</button>
+        <button class="setup-btn" data-setup="r2g">Red to Green</button>
+        <button class="setup-btn" data-setup="hod">HOD Break</button>
+        <button class="setup-btn" data-setup="ema">EMA Bounce</button>
+    </div>
+    
     <div class="main">
         <div class="chart-area">
             <div class="chart-header">
-                <div>
+                <div class="ticker-info">
                     <span class="ticker" id="ticker">NVDA</span>
+                    <span class="price" id="price">$45.67</span>
                     <span class="change" id="change">+12.5%</span>
                 </div>
-                <div class="tf-tabs">
-                    <button class="tf-tab active" onclick="showTF(1)">1m</button>
-                    <button class="tf-tab" onclick="showTF(3)">3m</button>
-                    <button class="tf-tab" onclick="showTF(5)">5m</button>
-                </div>
             </div>
-            <div class="candle-chart" id="chart"></div>
+            <div class="chart-container">
+                <div class="price-axis" id="priceAxis"></div>
+                <div class="candle-chart" id="chart"></div>
+                <div class="volume-chart" id="volumeChart"></div>
+                <div class="volume-label">Volume</div>
+            </div>
             <div class="indicators" id="indicators"></div>
         </div>
         
@@ -245,6 +357,7 @@
                     <h4 id="feedbackTitle"></h4>
                     <p id="feedbackText"></p>
                 </div>
+                <div class="swipe-hint">👆 Swipe left for next</div>
             </div>
         </div>
     </div>
@@ -252,75 +365,97 @@
     <script>
         const SETUPS = [
             {
+                id: 'parabolic',
                 name: 'Parabolic Washout Long',
                 type: 'PARABOLIC',
                 rules: ['All green on 1-min', '5+ green on 3-min', '3+ green on 5-min', 'First pullback to support', 'NOT 2nd red at support'],
-                valid: {
-                    candles: ['g','g','g','g','g','g','g','g','g','G','G','G','G','G','g','g','g-'], // g=green, r=red, G=big green, g-=small pullback
-                    reason: '✅ All timeframes green, first pullback to support - valid entry!'
-                },
+                valid: [
+                    { candles: ['g','g','g','g','g','G','G','G','G','G','g','g','g-'], volumes: [1,1,1,1.5,2,3,3.5,3,2,2,1.5,1,0.8], reason: '✅ All timeframes green, first pullback to support with declining volume - valid entry!' },
+                    { candles: ['g','g','g','G','G','G','G','g','g','g','g-'], volumes: [1,1.5,2,3,4,3.5,3,2,1.5,1,0.7], reason: '✅ Strong parabolic move, volume dried up on pullback - valid!' }
+                ],
                 invalid: [
-                    { candles: ['g','g','g','g','r','g','g','r','r','g'], reason: '❌ Mixed candles - no parabolic move, choppy price action.' },
-                    { candles: ['g','g','g','G','G','G','r','r','g'], reason: '❌ Second red candle at support - selling pressure increasing.' },
-                    { candles: ['g','g','G','G','G','G','G','G'], reason: '❌ No pullback yet - chasing extended move.' }
+                    { candles: ['g','g','g','g','r','g','g','r','r','g'], volumes: [1,1,1,1,2,1,1,2,2,1], reason: '❌ Mixed candles - not a parabolic move, choppy action.' },
+                    { candles: ['g','g','g','G','G','G','r','r','g'], volumes: [1,2,2,3,3,2,3,3,1], reason: '❌ Second red candle at support with volume - selling pressure.' },
+                    { candles: ['g','g','G','G','G','G','G','G'], volumes: [1,2,3,4,4,3,3,2], reason: '❌ No pullback yet - would be chasing extended move.' }
                 ]
             },
             {
+                id: 'vwap',
                 name: 'VWAP Reclaim',
                 type: 'VWAP',
                 rules: ['Was below VWAP', 'Reclaimed with volume', 'All TFs green above VWAP', 'First pullback to VWAP'],
-                valid: {
-                    candles: ['r','r','r','r','g','G','G','g','g','g','g-'],
-                    reason: '✅ Clean reclaim, holding above VWAP, first pullback - valid entry!'
-                },
+                valid: [
+                    { candles: ['r','r','r','r','g','G','G','g','g','g','g-'], volumes: [1,1,1,1,2,3,3,2,1.5,1,0.8], reason: '✅ Clean reclaim with volume, holding above VWAP, first pullback - valid!' }
+                ],
                 invalid: [
-                    { candles: ['r','g','r','g','r','g','r','g'], reason: '❌ Chopping around VWAP - no clear control.' },
-                    { candles: ['r','r','g','g','r','r','g'], reason: '❌ Failed reclaim - rejected back below.' }
+                    { candles: ['r','g','r','g','r','g','r','g'], volumes: [1,1,1,1,1,1,1,1], reason: '❌ Chopping around VWAP - no clear control, avoid.' },
+                    { candles: ['r','r','g','g','r','r','g'], volumes: [1,1,2,1,2,2,1], reason: '❌ Failed reclaim - rejected back below with selling.' }
                 ]
             },
             {
+                id: 'r2g',
                 name: 'Red to Green',
                 type: 'R2G',
                 rules: ['Stock was RED', 'Crossed to GREEN', 'Timeframes aligned', 'First pullback to prev close'],
-                valid: {
-                    candles: ['r','r','r','R','g','G','G','G','g','g','g-'],
-                    reason: '✅ Clean R2G reversal, shorts trapped, first pullback - valid!'
-                },
+                valid: [
+                    { candles: ['r','r','r','R','g','G','G','G','g','g','g-'], volumes: [1,1,1,2,2,3,3,2,1.5,1,0.8], reason: '✅ Clean R2G reversal, shorts trapped, first pullback - valid!' }
+                ],
                 invalid: [
-                    { candles: ['r','r','g','r','g','r','g'], reason: '❌ Fighting at zero line - no clear winner.' },
-                    { candles: ['r','g','r','r','r','g'], reason: '❌ Weak bounce, sellers still in control.' }
+                    { candles: ['r','r','g','r','g','r','g'], volumes: [1,1,1,1,1,1,1], reason: '❌ Fighting at zero line - no clear winner yet.' },
+                    { candles: ['r','g','r','r','r','g'], volumes: [1,1,2,2,1,1], reason: '❌ Weak bounce, sellers still in control.' }
                 ]
             },
             {
+                id: 'hod',
                 name: 'HOD Breakout',
                 type: 'HOD',
                 rules: ['Broke High of Day', 'Volume on break', 'All TFs aligned', 'First pullback to old HOD'],
-                valid: {
-                    candles: ['g','g','g','g','G','G','g','g','g-'],
-                    reason: '✅ Clean HOD break, first retest of breakout level - valid!'
-                },
+                valid: [
+                    { candles: ['g','g','g','g','G','G','g','g','g-'], volumes: [1,1,1,2,4,3,2,1.5,1], reason: '✅ Clean HOD break with volume, first retest - valid entry!' }
+                ],
                 invalid: [
-                    { candles: ['g','g','g','G','r','r','g'], reason: '❌ Failed breakout - rejected at HOD.' },
-                    { candles: ['g','r','g','r','g','G','r'], reason: '❌ Choppy, no clean break.' }
+                    { candles: ['g','g','g','G','r','r','g'], volumes: [1,1,2,3,2,2,1], reason: '❌ Failed breakout - rejected at HOD, avoid.' },
+                    { candles: ['g','r','g','r','g','G','r'], volumes: [1,1,1,1,1,2,1], reason: '❌ Choppy, no clean break - messy price action.' }
                 ]
             },
             {
+                id: 'ema',
                 name: '9 EMA Bounce',
                 type: 'EMA',
                 rules: ['Strong uptrend', 'Riding 9 EMA', 'All TFs above EMA', 'First touch of EMA'],
-                valid: {
-                    candles: ['g','g','G','g','g','G','g','g','g-'],
-                    reason: '✅ Trending above EMA, first touch bounce - valid entry!'
-                },
+                valid: [
+                    { candles: ['g','g','G','g','g','G','g','g','g-'], volumes: [1,1,2,1.5,1,2,1.5,1,0.8], reason: '✅ Trending above EMA, first touch with low volume - valid bounce entry!' }
+                ],
                 invalid: [
-                    { candles: ['g','g','r','g','r','g','r'], reason: '❌ Lost EMA, no longer trending.' },
-                    { candles: ['g','r','r','g','g','r','r'], reason: '❌ EMA broken, trend over.' }
+                    { candles: ['g','g','r','g','r','g','r'], volumes: [1,1,1,1,1,1,1], reason: '❌ Broke below EMA, no longer clean trend.' },
+                    { candles: ['g','r','r','g','g','r','r'], volumes: [1,2,2,1,1,2,2], reason: '❌ EMA broken with volume, trend over.' }
                 ]
             }
         ];
         
         let current = null;
         let stats = { correct: 0, wrong: 0, streak: 0 };
+        let selectedSetup = 'all';
+        let touchStartX = 0;
+        
+        // Setup selector
+        document.querySelectorAll('.setup-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedSetup = btn.dataset.setup;
+                loadScenario();
+            });
+        });
+        
+        // Swipe support
+        document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+        document.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (diff > 50 && document.getElementById('btnNext').style.display !== 'none') {
+                nextScenario();
+            }
+        });
         
         function generateCandles(pattern) {
             return pattern.map(c => {
@@ -331,20 +466,32 @@
             });
         }
         
-        function drawChart(candles) {
+        function drawChart(candles, volumes) {
             const chart = document.getElementById('chart');
+            const volumeChart = document.getElementById('volumeChart');
             chart.innerHTML = '';
+            volumeChart.innerHTML = '';
             
-            const maxHeight = 200;
-            const baseHeight = 80;
+            // Generate random base price
+            const basePrice = 20 + Math.random() * 60;
+            let prices = [basePrice];
             
+            // Add grid lines
+            for (let i = 0; i < 4; i++) {
+                const grid = document.createElement('div');
+                grid.className = 'grid-line';
+                grid.style.bottom = (50 + i * 50) + 'px';
+                chart.appendChild(grid);
+            }
+            
+            // Draw candles
             candles.forEach((c, i) => {
                 const div = document.createElement('div');
                 div.className = `candle ${c.green ? 'green' : 'red'}`;
                 
-                const bodyHeight = c.big ? (60 + Math.random()*40) : (20 + Math.random()*30);
-                const wickTop = 5 + Math.random()*15;
-                const wickBottom = c.pullback ? (15 + Math.random()*10) : (5 + Math.random()*10);
+                const bodyHeight = c.big ? (50 + Math.random()*30) : (15 + Math.random()*25);
+                const wickTop = 3 + Math.random()*10;
+                const wickBottom = c.pullback ? (12 + Math.random()*8) : (3 + Math.random()*8);
                 
                 const body = document.createElement('div');
                 body.className = 'candle-body';
@@ -364,40 +511,60 @@
                 div.appendChild(body);
                 div.appendChild(wickB);
                 
-                // Position from bottom
-                const bottom = baseHeight + (c.big ? 20 : 0) + (i * 3) + (c.green ? 5 : -5);
+                const bottom = 60 + (c.big ? 15 : 0) + (i * 4) + (c.green ? 4 : -2);
                 div.style.marginBottom = bottom + 'px';
                 
+                // Track price
+                const priceChange = c.green ? (c.big ? 2 : 0.5) : (c.big ? -2 : -0.5);
+                prices.push(prices[prices.length-1] + priceChange);
+                
                 chart.appendChild(div);
+                
+                // Volume bar
+                const vol = document.createElement('div');
+                vol.className = `volume-bar ${c.green ? 'green' : 'red'} ${volumes[i] > 2 ? 'high' : ''}`;
+                vol.style.height = (volumes[i] * 12) + 'px';
+                volumeChart.appendChild(vol);
             });
             
-            // Add support line
+            // Support line
             const support = document.createElement('div');
             support.className = 'support-line';
-            support.style.bottom = (baseHeight + 20) + 'px';
+            support.style.bottom = '75px';
             chart.appendChild(support);
             
             const label = document.createElement('div');
             label.className = 'support-label';
-            label.style.bottom = (baseHeight + 20) + 'px';
-            label.textContent = 'Support';
+            label.style.bottom = '75px';
+            label.textContent = '$' + (basePrice + 3).toFixed(2);
             chart.appendChild(label);
+            
+            // Price axis
+            const priceAxis = document.getElementById('priceAxis');
+            const maxPrice = Math.max(...prices) + 2;
+            const minPrice = Math.min(...prices) - 2;
+            priceAxis.innerHTML = `
+                <span>$${maxPrice.toFixed(2)}</span>
+                <span>$${((maxPrice + minPrice) / 2).toFixed(2)}</span>
+                <span>$${minPrice.toFixed(2)}</span>
+            `;
+            
+            // Update header price
+            document.getElementById('price').textContent = '$' + prices[prices.length-1].toFixed(2);
         }
         
         function updateIndicators(candles) {
             const container = document.getElementById('indicators');
-            const greenCount = candles.filter(c => c.green).length;
-            const totalCount = candles.length;
             const consecutive = countConsecutiveGreen(candles);
             
             const pass1 = consecutive >= 5;
-            const pass3 = Math.floor(consecutive/3) >= 5;
-            const pass5 = Math.floor(consecutive/5) >= 3;
+            const pass3 = consecutive >= 4;
+            const pass5 = consecutive >= 3;
             
             container.innerHTML = `
                 <div class="indicator ${pass1 ? 'pass' : 'fail'}">1m: ${consecutive} green ${pass1 ? '✓' : '✗'}</div>
-                <div class="indicator ${pass3 ? 'pass' : 'fail'}">3m: ~${Math.floor(consecutive/1.5)} green ${pass3 ? '✓' : '✗'}</div>
-                <div class="indicator ${pass5 ? 'pass' : 'fail'}">5m: ~${Math.floor(consecutive/2)} green ${pass5 ? '✓' : '✗'}</div>
+                <div class="indicator ${pass3 ? 'pass' : 'fail'}">3m: ${Math.ceil(consecutive*0.8)} green ${pass3 ? '✓' : '✗'}</div>
+                <div class="indicator ${pass5 ? 'pass' : 'fail'}">5m: ${Math.ceil(consecutive*0.6)} green ${pass5 ? '✓' : '✗'}</div>
             `;
         }
         
@@ -411,30 +578,38 @@
         }
         
         function loadScenario() {
-            const setup = SETUPS[Math.floor(Math.random() * SETUPS.length)];
-            const isValid = Math.random() > 0.4;
-            
-            let pattern, reason;
-            if (isValid) {
-                pattern = setup.valid.candles;
-                reason = setup.valid.reason;
-            } else {
-                const inv = setup.invalid[Math.floor(Math.random() * setup.invalid.length)];
-                pattern = inv.candles;
-                reason = inv.reason;
+            let availableSetups = SETUPS;
+            if (selectedSetup !== 'all') {
+                availableSetups = SETUPS.filter(s => s.id === selectedSetup);
             }
             
-            current = { setup, isValid, reason, candles: generateCandles(pattern) };
+            const setup = availableSetups[Math.floor(Math.random() * availableSetups.length)];
+            const isValid = Math.random() > 0.45;
+            
+            let scenario;
+            if (isValid) {
+                scenario = setup.valid[Math.floor(Math.random() * setup.valid.length)];
+            } else {
+                scenario = setup.invalid[Math.floor(Math.random() * setup.invalid.length)];
+            }
+            
+            current = { 
+                setup, 
+                isValid, 
+                reason: scenario.reason, 
+                candles: generateCandles(scenario.candles),
+                volumes: scenario.volumes
+            };
             
             // Update UI
             document.getElementById('setup-name').innerHTML = `${setup.name} <span class="setup-type">${setup.type}</span>`;
             document.getElementById('rules').innerHTML = setup.rules.map(r => `<li>${r}</li>`).join('');
             
-            const tickers = ['NVDA','TSLA','AMD','SMCI','MARA','IONQ','RGTI','PLTR','COIN','MSTR'];
+            const tickers = ['NVDA','TSLA','AMD','SMCI','MARA','IONQ','RGTI','PLTR','COIN','MSTR','SOFI','RKLB'];
             document.getElementById('ticker').textContent = tickers[Math.floor(Math.random()*tickers.length)];
-            document.getElementById('change').textContent = `+${(5+Math.random()*15).toFixed(1)}%`;
+            document.getElementById('change').textContent = `+${(5+Math.random()*20).toFixed(1)}%`;
             
-            drawChart(current.candles);
+            drawChart(current.candles, current.volumes);
             updateIndicators(current.candles);
             
             document.getElementById('btnValid').disabled = false;
@@ -471,13 +646,6 @@
         
         function nextScenario() {
             loadScenario();
-        }
-        
-        function showTF(tf) {
-            document.querySelectorAll('.tf-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            // Could show aggregated view - for simplicity just redraw
-            drawChart(current.candles);
         }
         
         loadScenario();
