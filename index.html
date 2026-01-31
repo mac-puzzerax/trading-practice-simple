@@ -304,38 +304,72 @@
         .action-btn.valid-btn { background: #00ff88; color: #000; }
         .action-btn:disabled { opacity: 0.4; transform: none !important; }
         
-        /* Feedback overlay */
-        .feedback-overlay {
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            cursor: pointer;
+            text-align: center;
+            max-width: 90%;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.correct {
+            background: #00ff88;
+            color: #000;
+        }
+        .toast.wrong {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        .toast small {
+            display: block;
+            font-weight: normal;
+            font-size: 0.75em;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+        
+        /* Full explanation modal (tap toast to see) */
+        .explain-modal {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.9);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 150;
             padding: 20px;
         }
-        .feedback-overlay.show { display: flex; }
-        .feedback-content {
+        .explain-modal.show { display: flex; }
+        .explain-content {
             background: #1a1a2e;
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             max-width: 400px;
             text-align: center;
         }
-        .feedback-icon { font-size: 4em; margin-bottom: 15px; }
-        .feedback-title { font-size: 1.5em; margin-bottom: 10px; }
-        .feedback-title.correct { color: #00ff88; }
-        .feedback-title.wrong { color: #ff6b6b; }
-        .feedback-text { color: #aaa; margin-bottom: 25px; line-height: 1.5; }
-        .feedback-btn {
-            padding: 15px 40px;
-            background: #00d4ff;
+        .explain-content h3 { margin-bottom: 15px; }
+        .explain-content h3.correct { color: #00ff88; }
+        .explain-content h3.wrong { color: #ff6b6b; }
+        .explain-content p { color: #aaa; line-height: 1.6; margin-bottom: 20px; }
+        .explain-content button {
+            padding: 12px 30px;
+            background: #333;
             border: none;
-            border-radius: 10px;
-            color: #000;
-            font-size: 1.1em;
-            font-weight: bold;
+            border-radius: 8px;
+            color: #fff;
             cursor: pointer;
         }
         
@@ -452,13 +486,18 @@
         </div>
     </div>
     
-    <!-- FEEDBACK OVERLAY -->
-    <div class="feedback-overlay" id="feedback-overlay">
-        <div class="feedback-content">
-            <div class="feedback-icon" id="fb-icon">✓</div>
-            <div class="feedback-title" id="fb-title">Correct!</div>
-            <p class="feedback-text" id="fb-text">Explanation here...</p>
-            <button class="feedback-btn" onclick="nextCard()">Next →</button>
+    <!-- TOAST -->
+    <div class="toast" id="toast" onclick="showExplanation()">
+        <span id="toast-text">✓ Correct!</span>
+        <small>Tap for details</small>
+    </div>
+    
+    <!-- EXPLANATION MODAL -->
+    <div class="explain-modal" id="explain-modal" onclick="closeExplanation()">
+        <div class="explain-content" onclick="event.stopPropagation()">
+            <h3 id="explain-title">Result</h3>
+            <p id="explain-text">Explanation...</p>
+            <button onclick="closeExplanation()">Got it</button>
         </div>
     </div>
 
@@ -789,8 +828,11 @@
         });
         
         // ============== ANSWER ==============
+        let lastResult = null;
+        
         function answer(saidValid) {
             const isCorrect = saidValid === current.valid;
+            lastResult = { isCorrect, reason: current.reason };
             
             // Animate card exit
             const card = document.getElementById('card');
@@ -812,21 +854,37 @@
             document.getElementById('p-correct').textContent = stats.correct;
             document.getElementById('p-wrong').textContent = stats.wrong;
             
-            // Show feedback
-            setTimeout(() => {
-                document.getElementById('fb-icon').textContent = isCorrect ? '✅' : '❌';
-                document.getElementById('fb-title').textContent = isCorrect ? 'Correct!' : 'Wrong';
-                document.getElementById('fb-title').className = `feedback-title ${isCorrect ? 'correct' : 'wrong'}`;
-                document.getElementById('fb-text').textContent = current.reason;
-                document.getElementById('feedback-overlay').classList.add('show');
-            }, 200);
+            // Show toast
+            const toast = document.getElementById('toast');
+            toast.className = `toast ${isCorrect ? 'correct' : 'wrong'}`;
+            document.getElementById('toast-text').textContent = isCorrect ? '✓ Correct!' : '✗ Wrong';
+            toast.classList.add('show');
+            
+            // Store explanation for modal
+            document.getElementById('explain-title').textContent = isCorrect ? '✅ Correct!' : '❌ Wrong';
+            document.getElementById('explain-title').className = isCorrect ? 'correct' : 'wrong';
+            document.getElementById('explain-text').textContent = current.reason;
             
             document.getElementById('btn-valid').disabled = true;
             document.getElementById('btn-invalid').disabled = true;
+            
+            // Auto-advance after delay
+            setTimeout(() => {
+                toast.classList.remove('show');
+                nextCard();
+            }, 1500);
+        }
+        
+        function showExplanation() {
+            document.getElementById('toast').classList.remove('show');
+            document.getElementById('explain-modal').classList.add('show');
+        }
+        
+        function closeExplanation() {
+            document.getElementById('explain-modal').classList.remove('show');
         }
         
         function nextCard() {
-            document.getElementById('feedback-overlay').classList.remove('show');
             const card = document.getElementById('card');
             card.classList.remove('exiting');
             loadCard();
