@@ -222,6 +222,20 @@
             gap: 4px;
             height: 150px;
             position: relative;
+            margin-left: 40px;
+        }
+        .price-axis {
+            position: absolute;
+            left: 5px;
+            top: 10px;
+            bottom: 10px;
+            width: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.65em;
+            color: #666;
+            text-align: right;
         }
         .candle { display: flex; flex-direction: column; align-items: center; position: relative; width: 14px; }
         .candle-body { width: 10px; border-radius: 2px; min-height: 5px; }
@@ -235,14 +249,16 @@
             align-items: flex-end;
             justify-content: center;
             gap: 4px;
-            height: 30px;
+            height: 45px;
             border-top: 1px solid #333;
             padding-top: 8px;
             margin-top: 8px;
+            margin-left: 40px;
         }
-        .vol-bar { width: 10px; border-radius: 2px 2px 0 0; }
-        .vol-bar.green { background: #00ff8850; }
-        .vol-bar.red { background: #ff6b6b50; }
+        .vol-bar { width: 10px; border-radius: 2px 2px 0 0; min-height: 4px; }
+        .vol-bar.green { background: #00ff8880; }
+        .vol-bar.red { background: #ff6b6b80; }
+        .vol-bar.high { background: #00d4ff90; }
         
         .card-setup {
             background: #0d111780;
@@ -567,19 +583,43 @@
         function toggleSetup(el) {
             const setup = el.dataset.setup;
             if (setup === 'all') {
+                // Select all - clear others and select "all"
                 document.querySelectorAll('[data-setup]').forEach(c => c.classList.remove('selected'));
                 el.classList.add('selected');
                 settings.setups = SETUPS.map(s => s.id);
             } else {
+                // Toggle individual setup
                 document.querySelector('[data-setup="all"]').classList.remove('selected');
                 el.classList.toggle('selected');
-                settings.setups = [...document.querySelectorAll('[data-setup].selected')]
-                    .map(c => c.dataset.setup)
-                    .filter(s => s !== 'all');
+                
+                // Get all selected setups
+                const selected = [...document.querySelectorAll('[data-setup].selected:not([data-setup="all"])')]
+                    .map(c => c.dataset.setup);
+                
+                settings.setups = selected;
+                
+                // If all are selected, show "All" as selected
+                if (selected.length === SETUPS.length) {
+                    document.querySelectorAll('[data-setup]').forEach(c => c.classList.remove('selected'));
+                    document.querySelector('[data-setup="all"]').classList.add('selected');
+                }
+                
+                // If none selected, default to all
                 if (settings.setups.length === 0) {
                     document.querySelector('[data-setup="all"]').classList.add('selected');
                     settings.setups = SETUPS.map(s => s.id);
                 }
+            }
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const count = settings.setups.length;
+            const allBtn = document.querySelector('[data-setup="all"]');
+            if (count === SETUPS.length) {
+                allBtn.textContent = 'All Setups';
+            } else {
+                allBtn.textContent = `All Setups (${count} selected)`;
             }
         }
         
@@ -652,7 +692,24 @@
             area.innerHTML = '<div class="support-line"></div>';
             volArea.innerHTML = '';
             
+            // Add price axis
+            const basePrice = 20 + Math.random() * 60;
+            const priceAxis = document.createElement('div');
+            priceAxis.className = 'price-axis';
+            priceAxis.innerHTML = `
+                <span>$${(basePrice + 5).toFixed(2)}</span>
+                <span>$${(basePrice + 2.5).toFixed(2)}</span>
+                <span>$${basePrice.toFixed(2)}</span>
+            `;
+            area.parentElement.insertBefore(priceAxis, area);
+            
+            // Remove old price axis if exists
+            const oldAxis = area.parentElement.querySelectorAll('.price-axis');
+            if (oldAxis.length > 1) oldAxis[0].remove();
+            
             let greenCount = 0;
+            const maxVol = Math.max(...volumes);
+            
             candles.forEach((c, i) => {
                 const isGreen = c.includes('g') || c.includes('G');
                 const isBig = c.includes('G') || c.includes('R');
@@ -677,9 +734,12 @@
                 div.style.marginBottom = bottom + 'px';
                 area.appendChild(div);
                 
+                // Volume bar - scaled relative to max volume
                 const vol = document.createElement('div');
-                vol.className = `vol-bar ${isGreen ? 'green' : 'red'}`;
-                vol.style.height = (volumes[i] * 8) + 'px';
+                const volHeight = (volumes[i] / maxVol) * 35; // Max 35px
+                const isHighVol = volumes[i] >= maxVol * 0.8;
+                vol.className = `vol-bar ${isGreen ? 'green' : 'red'} ${isHighVol ? 'high' : ''}`;
+                vol.style.height = Math.max(4, volHeight) + 'px';
                 volArea.appendChild(vol);
             });
             
