@@ -583,12 +583,188 @@
                     { c: 'g,g,r,r,g,r,r', v: '1,1,1,1,1,1,1', valid: false, reason: '❌ No trend, random chop.' },
                     { c: 'g,G,r,r,r,g', v: '1,2,2,1,1,1', valid: false, reason: '❌ Breakdown, not bounce.' }
                 ]
+            },
+            {
+                id: 'gapgo', name: 'Gap and Go', type: 'GAP', direction: 'long',
+                rules: ['Stock gaps up 5%+ premarket', 'First 1-min candle is green', 'Break of first candle high', 'Volume confirmation'],
+                scenarios: [
+                    { c: 'G,g,g,G,G,g,g,g-', v: '4,2,1.5,3,3.5,2,1.5,1', valid: true, reason: '✅ Gap up, first candle green, broke high with volume.' },
+                    { c: 'G,G,g,g,G,g,g-', v: '3,3.5,2,1.5,3,2,1.5', valid: true, reason: '✅ Strong opening drive, continuation.' },
+                    { c: 'g,G,G,G,g,g,g-', v: '2,3,4,3,2,1.5,1', valid: true, reason: '✅ Building momentum after gap, first pullback.' },
+                    { c: 'G,g,G,G,g,g,g-', v: '3,2,4,3.5,2,1.5,1', valid: true, reason: '✅ Gap holds, rips higher, healthy pullback.' },
+                    { c: 'G,G,G,g,g,g,g-', v: '4,4,3,2,1.5,1,0.8', valid: true, reason: '✅ Explosive open, volume dry-up on pullback.' },
+                    { c: 'G,r,r,g,r,g', v: '3,2,2,1,1,1', valid: false, reason: '❌ Gap faded immediately, sellers in control.' },
+                    { c: 'r,r,g,g,r,r', v: '2,2,1,1,2,2', valid: false, reason: '❌ Gap filled, bearish.' },
+                    { c: 'G,r,r,r,r,g', v: '3,2,2,1,1,1', valid: false, reason: '❌ Gap and trap, avoid.' },
+                    { c: 'g,r,g,r,g,r,g', v: '1,1,1,1,1,1,1', valid: false, reason: '❌ Choppy open, no direction.' },
+                    { c: 'G,G,r,r,r,r', v: '3,3,2,2,1,1', valid: false, reason: '❌ Morning spike then dump.' }
+                ]
+            },
+            {
+                id: 'bullflag', name: 'Bull Flag', type: 'FLAG', direction: 'long',
+                rules: ['Strong pole (impulse move)', 'Tight consolidation (flag)', 'Declining volume in flag', 'Break of flag high'],
+                scenarios: [
+                    { c: 'G,G,G,g,g,r,g,r,g,G,g-', v: '3,4,3,1.5,1,0.8,0.7,0.6,0.8,3,2', valid: true, reason: '✅ Strong pole, tight flag, breakout with volume.' },
+                    { c: 'G,G,g,g,r,g,g,G,g-', v: '3,3.5,2,1,0.8,0.7,0.8,3,2', valid: true, reason: '✅ Classic flag pattern, volume expansion on break.' },
+                    { c: 'g,G,G,G,g,g,g,r,g,G-', v: '2,3,4,3,1.5,1,0.8,0.7,1,3', valid: true, reason: '✅ Flagpole intact, consolidation complete.' },
+                    { c: 'G,G,G,g,r,g,r,g,G,g-', v: '4,4,3,1.5,0.8,0.7,0.6,0.8,3.5,2', valid: true, reason: '✅ Textbook flag, ready for next leg.' },
+                    { c: 'G,G,g,g,g,r,g,G,G-', v: '3,3,2,1,0.8,0.7,1,3,3.5', valid: true, reason: '✅ Flag broke out, continuation confirmed.' },
+                    { c: 'G,G,r,r,r,r,g', v: '3,3,2,2,2,1,1', valid: false, reason: '❌ Flag broke down, not a flag anymore.' },
+                    { c: 'g,G,g,r,r,r,r,r', v: '1,2,1,1,1,1,1,1', valid: false, reason: '❌ Weak pole, bearish consolidation.' },
+                    { c: 'G,r,r,r,g,r,r', v: '2,2,2,1,1,1,1', valid: false, reason: '❌ Failed breakout, trend reversing.' },
+                    { c: 'g,g,g,r,r,r,g,r', v: '1,1,1,1,1,1,1,1', valid: false, reason: '❌ No clear flag structure.' },
+                    { c: 'G,G,r,r,r,g,r,r', v: '3,3,2,2,1,1,2,2', valid: false, reason: '❌ Lower highs in flag, weakness.' }
+                ]
+            },
+            {
+                id: 'dipbuy', name: 'Dip Buy', type: 'DIP', direction: 'long',
+                rules: ['Stock in strong uptrend', 'Sharp pullback on low volume', 'Held key support level', 'Green reversal candle'],
+                scenarios: [
+                    { c: 'g,G,G,g,r,r,g-,G,g', v: '2,3,3,2,1.5,1,0.8,3,2', valid: true, reason: '✅ Uptrend intact, dip bought at support with volume.' },
+                    { c: 'G,G,g,r,r,r,g-,G', v: '3,3,2,1,0.8,0.7,1,3', valid: true, reason: '✅ Sharp dip, low volume, strong bounce.' },
+                    { c: 'g,G,G,G,r,r,g,g-', v: '2,3,4,3,1,0.8,2,1.5', valid: true, reason: '✅ Trend strong, pullback healthy, support held.' },
+                    { c: 'G,g,g,r,r,g-,g,G', v: '3,2,1.5,1,0.8,1,1.5,3', valid: true, reason: '✅ Dip found buyers, back to highs.' },
+                    { c: 'g,G,G,r,r,r,g-,G,g', v: '2,3,3.5,1,0.8,0.7,1.5,3,2', valid: true, reason: '✅ Volume dried up on dip, demand returned.' },
+                    { c: 'G,G,r,r,r,r,r', v: '3,3,2,2,2,1,1', valid: false, reason: '❌ Dip became a downtrend.' },
+                    { c: 'g,G,r,R,r,r,g', v: '1,2,2,3,2,1,1', valid: false, reason: '❌ Heavy volume on dip, distribution.' },
+                    { c: 'g,g,r,r,r,r,g,r', v: '1,1,1,1,1,1,1,1', valid: false, reason: '❌ No uptrend to dip-buy into.' },
+                    { c: 'G,r,r,r,g,r,r,r', v: '2,2,2,1,1,2,2,1', valid: false, reason: '❌ Lower lows, trend broken.' },
+                    { c: 'g,G,r,r,g,r,r,r', v: '1,2,1,1,1,2,2,1', valid: false, reason: '❌ Failed bounce, more downside.' }
+                ]
+            },
+            {
+                id: 'breakdown', name: 'Breakdown Short', type: 'SHORT', direction: 'short',
+                rules: ['Stock in downtrend', 'Broke key support', 'Volume on breakdown', 'First bounce to broken support'],
+                scenarios: [
+                    { c: 'r,r,r,R,R,r,r,g-', v: '2,2,2,4,3,2,1.5,1', valid: true, reason: '✅ Clean breakdown, first retest of resistance.' },
+                    { c: 'r,R,R,r,r,r,g-', v: '2,4,3,2,1.5,1,0.8', valid: true, reason: '✅ Heavy selling, weak bounce to short.' },
+                    { c: 'r,r,R,R,R,r,g-', v: '2,2,3,4,3,2,1', valid: true, reason: '✅ Capitulation break, shorting the bounce.' },
+                    { c: 'g,r,r,R,R,r,r,g-', v: '1,2,2,4,3,2,1.5,1', valid: true, reason: '✅ Failed rally then breakdown, textbook.' },
+                    { c: 'r,r,r,r,R,R,r,g-', v: '1,1,2,2,4,3,2,1', valid: true, reason: '✅ Accelerating downside, bounce to short.' },
+                    { c: 'r,r,g,g,G,g,g', v: '1,1,2,2,3,2,1', valid: false, reason: '❌ Breakdown failed, reversal happening.' },
+                    { c: 'r,R,g,g,g,G,g', v: '2,3,2,2,2,3,2', valid: false, reason: '❌ V-bottom, don\'t short.' },
+                    { c: 'r,g,r,g,r,g,r', v: '1,1,1,1,1,1,1', valid: false, reason: '❌ Choppy, no clear breakdown.' },
+                    { c: 'r,r,g,G,g,r,g', v: '1,1,2,3,2,1,1', valid: false, reason: '❌ Buyers stepping in.' },
+                    { c: 'R,g,g,g,G,g,g', v: '3,1,1,2,3,2,1', valid: false, reason: '❌ Flush and rally, not shortable.' }
+                ]
+            },
+            {
+                id: 'failedbreak', name: 'Failed Breakout', type: 'FAIL', direction: 'short',
+                rules: ['Stock attempted breakout', 'Rejected with volume', 'Closed below breakout level', 'Shorting the failure'],
+                scenarios: [
+                    { c: 'g,g,G,G,r,R,r,r-', v: '2,2,3,3,3,4,2,1.5', valid: true, reason: '✅ Breakout failed, heavy selling, short the bounce.' },
+                    { c: 'g,G,G,r,r,R,r-', v: '2,3,3,2,2,4,2', valid: true, reason: '✅ Bull trap, aggressive rejection.' },
+                    { c: 'g,g,g,G,r,R,R,r-', v: '1,2,2,3,2,4,3,2', valid: true, reason: '✅ Breakout fakeout, trapped longs.' },
+                    { c: 'G,G,r,r,R,r,r-', v: '3,3,2,2,4,2,1.5', valid: true, reason: '✅ Classic failed break, now resistance.' },
+                    { c: 'g,G,G,G,r,R,r-', v: '2,3,4,3,2,4,2', valid: true, reason: '✅ Extended then rejected, good short.' },
+                    { c: 'g,g,G,r,g,G,g', v: '1,2,3,1,2,3,2', valid: false, reason: '❌ Not a failed breakout, consolidating.' },
+                    { c: 'g,G,r,g,G,G,g', v: '2,3,1,2,3,4,2', valid: false, reason: '❌ Breakout worked, don\'t short.' },
+                    { c: 'g,g,g,g,G,G,g', v: '1,1,2,2,3,3,2', valid: false, reason: '❌ Still breaking out, no failure.' },
+                    { c: 'g,G,r,g,g,G,G', v: '2,3,1,1,2,3,3', valid: false, reason: '❌ Shakeout then continuation.' },
+                    { c: 'g,g,G,g,g,G,g', v: '1,2,3,2,2,3,2', valid: false, reason: '❌ Healthy breakout, avoid shorting.' }
+                ]
+            },
+            {
+                id: 'orb', name: 'Opening Range Break', type: 'ORB', direction: 'long',
+                rules: ['Define first 5-15 min range', 'Wait for range break', 'Volume on breakout', 'First pullback to range'],
+                scenarios: [
+                    { c: 'g,r,g,r,g,G,G,g,g-', v: '2,1.5,1.5,1,1.5,4,3,2,1.5', valid: true, reason: '✅ Range formed, clean break, first test.' },
+                    { c: 'r,g,r,g,G,G,g,g-', v: '1,1,1,1.5,4,3,2,1.5', valid: true, reason: '✅ Consolidation then breakout.' },
+                    { c: 'g,g,r,g,r,G,G,g-', v: '1.5,1,1,1,1,4,3,2', valid: true, reason: '✅ Tight range, explosive break.' },
+                    { c: 'r,g,g,r,g,G,G,G,g-', v: '1,1,1.5,1,1.5,3,4,3,2', valid: true, reason: '✅ Range break with follow-through.' },
+                    { c: 'g,r,g,g,r,G,G,g,g-', v: '1.5,1,1.5,1,1,4,3,2,1.5', valid: true, reason: '✅ Textbook ORB setup.' },
+                    { c: 'g,r,g,r,g,r,g,r', v: '1,1,1,1,1,1,1,1', valid: false, reason: '❌ No breakout, still in range.' },
+                    { c: 'g,G,r,r,r,g,r', v: '2,3,2,2,1,1,1', valid: false, reason: '❌ False break, back in range.' },
+                    { c: 'r,g,G,r,r,r,g', v: '1,2,3,2,2,1,1', valid: false, reason: '❌ Failed ORB, range lost.' },
+                    { c: 'g,g,r,r,r,g,r,r', v: '1,1,1,1,1,1,1,1', valid: false, reason: '❌ Breaking down, not up.' },
+                    { c: 'g,r,G,r,r,r,r', v: '1,1,3,2,2,1,1', valid: false, reason: '❌ ORB rejection, bearish.' }
+                ]
+            },
+            {
+                id: 'pmhigh', name: 'Pre-Market High', type: 'PMH', direction: 'long',
+                rules: ['Stock has clear PM high', 'Breaks PM high at open', 'Volume confirmation', 'First pullback to PM high'],
+                scenarios: [
+                    { c: 'G,G,g,g,G,g,g-', v: '4,3,2,1.5,3,2,1.5', valid: true, reason: '✅ PM high broke with volume, first test.' },
+                    { c: 'g,G,G,g,g,g,g-', v: '2,4,3,2,1.5,1,0.8', valid: true, reason: '✅ Clean PM break, pullback entry.' },
+                    { c: 'G,g,G,G,g,g,g-', v: '3,2,4,3,2,1.5,1', valid: true, reason: '✅ Pushed through PM, holding above.' },
+                    { c: 'g,G,G,G,g,g,g-', v: '2,3,4,3,2,1.5,1', valid: true, reason: '✅ Strong break of overnight high.' },
+                    { c: 'G,G,G,g,g,g,g-', v: '4,4,3,2,1.5,1,0.8', valid: true, reason: '✅ Gap through PM high, first pullback.' },
+                    { c: 'G,r,r,g,r,r', v: '3,2,2,1,1,1', valid: false, reason: '❌ PM high rejected, faded.' },
+                    { c: 'g,G,r,r,r,g', v: '2,3,2,2,1,1', valid: false, reason: '❌ Failed to hold PM break.' },
+                    { c: 'G,r,r,r,r,g', v: '3,2,2,1,1,1', valid: false, reason: '❌ PM high was the top.' },
+                    { c: 'g,g,G,r,r,r,r', v: '1,2,3,2,2,1,1', valid: false, reason: '❌ Spike and fade at PM.' },
+                    { c: 'G,G,r,r,r,r,g', v: '3,3,2,2,1,1,1', valid: false, reason: '❌ Double top at PM, avoid.' }
+                ]
+            },
+            {
+                id: 'pdhigh', name: 'Prior Day High', type: 'PDH', direction: 'long',
+                rules: ['Broke prior day high', 'Daily level is significant', 'All timeframes aligned', 'First pullback to PDH'],
+                scenarios: [
+                    { c: 'g,g,G,G,G,g,g,g-', v: '2,2,3,4,3,2,1.5,1', valid: true, reason: '✅ PDH broke clean, first retest.' },
+                    { c: 'g,G,G,g,g,G,g,g-', v: '2,3,4,2,1.5,3,2,1.5', valid: true, reason: '✅ Through yesterday\'s high, new territory.' },
+                    { c: 'g,g,g,G,G,G,g,g-', v: '1,2,2,4,4,3,2,1.5', valid: true, reason: '✅ Building to break PDH, continuation.' },
+                    { c: 'G,G,G,g,g,g,g-', v: '3,4,3,2,1.5,1,0.8', valid: true, reason: '✅ Strong gap through PDH, pullback entry.' },
+                    { c: 'g,g,G,G,g,g,G,g-', v: '1,2,3,4,2,1.5,3,2', valid: true, reason: '✅ Broke and holding above PDH.' },
+                    { c: 'g,G,G,r,r,r,g', v: '2,3,3,2,2,1,1', valid: false, reason: '❌ PDH rejection, failed break.' },
+                    { c: 'g,g,G,r,r,r,r', v: '1,2,3,2,2,1,1', valid: false, reason: '❌ Couldn\'t hold PDH break.' },
+                    { c: 'G,r,r,g,r,r,r', v: '3,2,1,1,2,1,1', valid: false, reason: '❌ Gap to PDH then dump.' },
+                    { c: 'g,g,G,G,r,r,r,r', v: '1,2,3,3,2,2,1,1', valid: false, reason: '❌ Double top at PDH.' },
+                    { c: 'g,G,r,g,r,r,g', v: '2,3,2,1,1,1,1', valid: false, reason: '❌ Choppy around PDH, no clear break.' }
+                ]
+            },
+            {
+                id: 'reversal', name: 'Bottom Reversal', type: 'REV', direction: 'long',
+                rules: ['Extended downtrend', 'Capitulation volume', 'Strong reversal candle', 'Higher low confirmation'],
+                scenarios: [
+                    { c: 'r,r,R,R,g-,G,G,g,g', v: '2,2,4,5,3,4,3,2,1.5', valid: true, reason: '✅ Capitulation then reversal, V-bottom.' },
+                    { c: 'r,R,R,r,g-,G,G,g', v: '2,4,4,2,2,4,3,2', valid: true, reason: '✅ Climactic selling then buyers step in.' },
+                    { c: 'r,r,r,R,g-,g,G,G,g', v: '1,2,2,5,2,2,4,3,2', valid: true, reason: '✅ Exhaustion then power reversal.' },
+                    { c: 'R,r,r,g-,G,G,g,g', v: '4,2,1.5,2,4,3,2,1.5', valid: true, reason: '✅ Flush then strong recovery.' },
+                    { c: 'r,r,R,r,g-,G,G,G', v: '2,2,4,2,2,3,4,3', valid: true, reason: '✅ Bottom found, momentum shifting.' },
+                    { c: 'r,r,R,g,r,r,r', v: '2,2,3,1,2,2,1', valid: false, reason: '❌ Dead cat bounce, more downside.' },
+                    { c: 'r,R,g,r,g,r,r', v: '2,3,1,1,1,1,1', valid: false, reason: '❌ No follow-through, still weak.' },
+                    { c: 'r,r,r,g,r,r,R', v: '1,1,1,1,1,2,3', valid: false, reason: '❌ Lower low, downtrend continues.' },
+                    { c: 'r,r,g,g,r,r,r,r', v: '1,1,1,1,2,2,1,1', valid: false, reason: '❌ Weak bounce, sellers in control.' },
+                    { c: 'R,g,r,g,r,r,r', v: '3,1,1,1,1,1,1', valid: false, reason: '❌ No demand, avoid.' }
+                ]
+            },
+            {
+                id: 'macross', name: 'MA Crossover', type: 'CROSS', direction: 'long',
+                rules: ['9 EMA crossing above 20 EMA', 'Price above both MAs', 'Volume on cross', 'Pullback to 9 EMA'],
+                scenarios: [
+                    { c: 'r,r,g,g,G,G,g,g,g-', v: '1,1,2,2,3,3,2,1.5,1', valid: true, reason: '✅ Bullish cross, price above MAs, pullback entry.' },
+                    { c: 'r,g,g,G,G,g,g,g-', v: '1,2,2,3,4,2,1.5,1', valid: true, reason: '✅ Cross confirmed, momentum building.' },
+                    { c: 'g,r,g,G,G,G,g,g-', v: '1,1,2,3,4,3,2,1.5', valid: true, reason: '✅ MAs crossed, trend starting, first dip.' },
+                    { c: 'r,g,g,g,G,G,g,g-', v: '1,1.5,2,2,4,3,2,1.5', valid: true, reason: '✅ Golden cross setup, buying the pullback.' },
+                    { c: 'r,r,g,G,G,g,g,g-', v: '1,1,2,4,3,2,1.5,1', valid: true, reason: '✅ Fresh cross, strong momentum.' },
+                    { c: 'g,g,r,r,r,g,r', v: '1,1,1,1,1,1,1', valid: false, reason: '❌ Cross failed, back below MAs.' },
+                    { c: 'r,g,r,g,r,g,r', v: '1,1,1,1,1,1,1', valid: false, reason: '❌ Whipsawing around MAs, no trend.' },
+                    { c: 'g,G,r,r,r,r,g', v: '2,3,2,2,1,1,1', valid: false, reason: '❌ Cross failed, bearish.' },
+                    { c: 'r,r,g,g,r,r,r', v: '1,1,1,1,2,2,1', valid: false, reason: '❌ False cross, downtrend intact.' },
+                    { c: 'g,r,r,g,r,r,r', v: '1,1,1,1,1,1,1', valid: false, reason: '❌ No cross, still under MAs.' }
+                ]
+            },
+            {
+                id: 'squeeze', name: 'Squeeze Breakout', type: 'SQZ', direction: 'long',
+                rules: ['Tight consolidation (low volatility)', 'Bollinger Bands squeezing', 'Volume contraction then expansion', 'Break with momentum'],
+                scenarios: [
+                    { c: 'g,r,g,r,g,r,g,G,G,g-', v: '0.8,0.7,0.6,0.6,0.5,0.5,0.8,4,3,2', valid: true, reason: '✅ Tight squeeze then explosive breakout.' },
+                    { c: 'r,g,r,g,r,g,G,G,g-', v: '0.7,0.6,0.6,0.5,0.5,0.7,4,3,2', valid: true, reason: '✅ Coiled tight, energy release up.' },
+                    { c: 'g,g,r,g,r,g,G,G,G,g-', v: '0.8,0.7,0.6,0.5,0.5,0.6,3,4,3,2', valid: true, reason: '✅ Volatility contraction then expansion.' },
+                    { c: 'r,g,g,r,g,r,g,G,G-', v: '0.7,0.7,0.6,0.5,0.5,0.5,0.8,4,3', valid: true, reason: '✅ Squeeze fired long, momentum trade.' },
+                    { c: 'g,r,g,r,g,g,r,G,G,g-', v: '0.8,0.7,0.6,0.5,0.6,0.5,0.6,4,3,2', valid: true, reason: '✅ Range bound then breakout.' },
+                    { c: 'g,r,g,r,g,r,g,r,g,r', v: '0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5', valid: false, reason: '❌ Still squeezing, no breakout yet.' },
+                    { c: 'g,r,g,r,g,R,R,r', v: '0.5,0.5,0.5,0.5,0.6,4,3,2', valid: false, reason: '❌ Squeeze fired down, not long.' },
+                    { c: 'g,r,g,G,r,r,r,g', v: '0.5,0.5,0.6,2,2,1,1,1', valid: false, reason: '❌ False breakout, back in range.' },
+                    { c: 'r,g,r,g,r,g,r,g,r', v: '0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5', valid: false, reason: '❌ Endless chop, no direction.' },
+                    { c: 'g,r,g,G,r,g,r,r', v: '0.5,0.5,0.6,2,1,1,1,1', valid: false, reason: '❌ Fakeout, avoid.' }
+                ]
             }
         ];
         
         let settings = {
-            setups: ['parabolic', 'vwap', 'r2g', 'hod', 'ema'],
-            directions: ['long'],
+            setups: ['parabolic', 'vwap', 'r2g', 'hod', 'ema', 'gapgo', 'bullflag', 'dipbuy', 'breakdown', 'failedbreak', 'orb', 'pmhigh', 'pdhigh', 'reversal', 'macross', 'squeeze'],
+            directions: ['long', 'short'],
             difficulty: 'both'
         };
         
